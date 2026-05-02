@@ -517,24 +517,34 @@ function InviteContent() {
                       </p>
                     </motion.div>
                   ) : !showRsvp ? (
-                    <motion.button
-                      onClick={() => setShowRsvp(true)}
-                      className="px-8 py-3 rounded-full font-semibold text-sm tracking-wide transition shadow-lg"
-                      style={{
-                        backgroundColor: card.accentColor,
-                        color: card.primaryColor,
-                      }}
+                    <motion.div
+                      className="flex flex-col items-center gap-2"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 1.2 }}
-                      whileHover={{
-                        scale: 1.05,
-                        boxShadow: `0 8px 30px ${card.accentColor}35`,
-                      }}
-                      whileTap={{ scale: 0.95 }}
                     >
-                      💌 RSVP Now
-                    </motion.button>
+                      <motion.button
+                        onClick={() => setShowRsvp(true)}
+                        className="px-8 py-3 rounded-full font-semibold text-sm tracking-wide transition shadow-lg"
+                        style={{
+                          backgroundColor: card.accentColor,
+                          color: card.primaryColor,
+                        }}
+                        whileHover={{
+                          scale: 1.05,
+                          boxShadow: `0 8px 30px ${card.accentColor}35`,
+                        }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        💌 RSVP Now
+                      </motion.button>
+                      <p
+                        className="text-xs opacity-35 italic"
+                        style={{ color: card.accentColor }}
+                      >
+                        Kindly respond by {new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" })}
+                      </p>
+                    </motion.div>
                   ) : (
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}

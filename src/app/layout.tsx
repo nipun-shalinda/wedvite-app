@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { Great_Vibes, Playfair_Display, Cormorant_Garamond } from "next/font/google";
+import {
+  Great_Vibes,
+  Playfair_Display,
+  Cormorant_Garamond,
+} from "next/font/google";
 import "./globals.css";
 
 const greatVibes = Great_Vibes({
@@ -23,6 +27,9 @@ export const metadata: Metadata = {
   title: "Wedvite — Beautiful Wedding Invitations",
   description:
     "Create stunning, interactive wedding invitation cards. Customize, share via WhatsApp & email, and collect RSVPs — all for free.",
+  icons: {
+    icon: "/images/couple-photo.svg",
+  },
 };
 
 export default function RootLayout({
