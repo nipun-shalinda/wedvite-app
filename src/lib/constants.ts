@@ -13,7 +13,8 @@ export const DEFAULT_THEME = {
   accent: "#b8860b",
 } as const;
 
-export const DEFAULT_MESSAGE = "With hearts full of joy, we invite you to witness and celebrate the beginning of our forever.";
+export const DEFAULT_MESSAGE =
+  "With hearts full of joy, we invite you to witness and celebrate the beginning of our forever.";
 
 export const FONT_STYLES = ["classic", "modern", "romantic"] as const;
 
@@ -38,4 +39,4 @@ Open your personal invitation here:
 We can't wait to see you there! 💕`;
 
 export const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycby_C4eHplnvCjnzylJEJv0-PHGgInuXVfUm8kHnNW4ZNuUr9WrXYmO1EKm-g2j_Yypr/exec"; // Set this after creating the Apps Script web app
+  "https://script.google.com/macros/s/AKfycbxMGGYYfRyf4QXv9gGgYMPLujF-225wXroAkAP8J43nRh_G80Cni44SK4XENlky2Ohl/exec"; // Set this after creating the Apps Script web app
