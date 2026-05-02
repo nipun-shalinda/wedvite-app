@@ -12,6 +12,17 @@ export async function addInvitee(name: string): Promise<void> {
   }
 }
 
+export async function fetchInvitees(): Promise<string[]> {
+  if (!GOOGLE_SCRIPT_URL) return [];
+  try {
+    const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=fetch`);
+    const data = await res.json();
+    return data.names ?? [];
+  } catch {
+    return [];
+  }
+}
+
 export async function updateRsvp(name: string, participate: "Yes" | "No"): Promise<void> {
   if (!GOOGLE_SCRIPT_URL) return;
   try {

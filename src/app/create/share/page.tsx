@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getDefaultCard } from "@/lib/card-data";
 import { buildShareMessage, buildInviteUrl, whatsappUrl, emailUrl } from "@/lib/share";
-import { addInvitee } from "@/lib/google-sheet";
+import { addInvitee, fetchInvitees } from "@/lib/google-sheet";
 import Link from "next/link";
 
 interface InviteeEntry {
@@ -16,8 +16,22 @@ export default function SharePage() {
   const [inviteeName, setInviteeName] = useState("");
   const [invitees, setInvitees] = useState<InviteeEntry[]>([]);
   const [copied, setCopied] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
+
+  // Load invitees from Google Sheet on mount
+  useEffect(() => {
+    fetchInvitees().then((names) => {
+      const origin = window.location.origin;
+      setInvitees(names.map((name) => ({
+        name,
+        link: buildInviteUrl(card, name, origin),
+      })));
+      setLoading(false);
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function handleAddInvitee() {
     const name = inviteeName.trim();
@@ -76,7 +90,9 @@ export default function SharePage() {
         </div>
 
         {/* Invitee list */}
-        {invitees.length > 0 && (
+        {loading ? (
+          <p className="text-center text-black/30 py-8">Loading invitees…</p>
+        ) : invitees.length > 0 ? (
           <div className="bg-gray-50 rounded-xl shadow-sm overflow-hidden border border-gray-200">
             <div className="px-6 py-4 border-b border-gray-200">
               <h3 className="font-semibold text-gray-800">
@@ -111,9 +127,7 @@ export default function SharePage() {
               })}
             </div>
           </div>
-        )}
-
-        {invitees.length === 0 && (
+        ) : (
           <p className="text-center text-black/30 py-8">
             Add invitee names above to generate personalized invitation links.
           </p>
