@@ -49,8 +49,8 @@ export default function HomePage() {
             className="font-[family-name:var(--font-playfair)] text-xl sm:text-2xl text-gray-500 max-w-2xl mx-auto mb-4"
             {...fadeUp(0.2)}
           >
-            Create stunning, interactive wedding invitation cards in traditional
-            Sri Lankan Kandyan style.
+            Design breathtaking digital wedding invitations that leave a lasting
+            impression.
           </motion.p>
           <motion.p
             className="text-gray-400 mb-10 max-w-lg mx-auto"
