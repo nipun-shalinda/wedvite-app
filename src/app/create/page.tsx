@@ -104,83 +104,92 @@ export default function CreatePage() {
           </div>
         </div>
 
-        {/* Live Preview — white & pink card */}
-        <div className="lg:w-96 shrink-0">
+        {/* Live Preview — matches invite card */}
+        <div className="lg:w-[28rem] shrink-0">
           <div className="sticky top-8">
             <h3 className="text-sm font-medium text-gray-400 mb-3">✨ Card Preview</h3>
-            <div ref={previewRef} className="rounded-2xl overflow-hidden shadow-2xl aspect-[3/4] relative flex flex-col items-center justify-center p-6 text-center"
-              style={{ backgroundColor: form.primaryColor, border: `2px solid ${form.accentColor}30` }}>
+            <div ref={previewRef} className="rounded-2xl overflow-hidden shadow-2xl relative"
+              style={{ backgroundColor: form.primaryColor, border: `2px solid ${form.accentColor}20` }}>
 
               {/* Ornamental corner borders */}
-              <div className="absolute top-3 left-3 w-10 h-10 border-t-2 border-l-2 rounded-tl-lg opacity-30" style={{ borderColor: form.accentColor }} />
-              <div className="absolute top-3 right-3 w-10 h-10 border-t-2 border-r-2 rounded-tr-lg opacity-30" style={{ borderColor: form.accentColor }} />
-              <div className="absolute bottom-3 left-3 w-10 h-10 border-b-2 border-l-2 rounded-bl-lg opacity-30" style={{ borderColor: form.accentColor }} />
-              <div className="absolute bottom-3 right-3 w-10 h-10 border-b-2 border-r-2 rounded-br-lg opacity-30" style={{ borderColor: form.accentColor }} />
+              <div className="absolute top-4 left-4 w-14 h-14 border-t-2 border-l-2 rounded-tl-lg opacity-20 z-20" style={{ borderColor: form.accentColor }} />
+              <div className="absolute top-4 right-4 w-14 h-14 border-t-2 border-r-2 rounded-tr-lg opacity-20 z-20" style={{ borderColor: form.accentColor }} />
+              <div className="absolute bottom-4 left-4 w-14 h-14 border-b-2 border-l-2 rounded-bl-lg opacity-20 z-20" style={{ borderColor: form.accentColor }} />
+              <div className="absolute bottom-4 right-4 w-14 h-14 border-b-2 border-r-2 rounded-br-lg opacity-20 z-20" style={{ borderColor: form.accentColor }} />
 
-              {/* Animated couple background */}
-              <div className="absolute inset-0 pointer-events-none z-0 flex items-center justify-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/images/couple-photo.svg" alt="" className="w-full h-full object-cover opacity-25" />
-              </div>
+              {/* Content */}
+              <div className="p-8 sm:p-12 text-center relative z-10">
+                <p className="text-2xl mb-2 select-none">🪷</p>
 
-              {/* Semi-transparent overlay for readability */}
-              <div className="absolute inset-0 z-[1]" style={{ backgroundColor: form.primaryColor, opacity: 0.6 }} />
+                {/* Parent names */}
+                <div className="mb-6 space-y-1" style={{ color: form.accentColor }}>
+                  <p className="text-xs tracking-widest uppercase opacity-60">Mr. &amp; Mrs. Herath</p>
+                  <p className="text-[10px] tracking-wider uppercase opacity-40">together with</p>
+                  <p className="text-xs tracking-widest uppercase opacity-60">Mr. &amp; Mrs. Rathnayake</p>
+                  <p className="text-[10px] tracking-wider uppercase opacity-40 mt-2">request the pleasure of the presence of</p>
+                  <p className="font-[family-name:var(--font-great-vibes)] text-2xl mt-1 opacity-60">Guest</p>
+                </div>
 
-              {/* Background pattern */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none z-[2]">
-                {form.pattern === "floral" && ["🌸", "🪷", "🌺", "🪷", "🌸", "🪷", "🌺", "🪷"].map((f, i) => (
-                  <span key={i} className="absolute text-sm opacity-10 select-none"
-                    style={{ left: `${5 + (i * 14) % 85}%`, top: `${4 + (i * 16) % 88}%`, transform: `rotate(${i * 30}deg)` }}>{f}</span>
-                ))}
-                {form.pattern === "hearts" && ["💕", "💗", "💖", "🤍", "💕", "💗", "🤍", "💖"].map((h, i) => (
-                  <span key={i} className="absolute text-sm opacity-10 select-none"
-                    style={{ left: `${10 + (i * 12) % 80}%`, top: `${5 + (i * 17) % 85}%` }}>{h}</span>
-                ))}
-                {form.pattern === "sparkle" && ["✨", "⭐", "💫", "✨", "⭐", "💫", "✨", "⭐"].map((s, i) => (
-                  <span key={i} className="absolute text-sm opacity-15 select-none"
-                    style={{ left: `${8 + (i * 13) % 82}%`, top: `${3 + (i * 15) % 90}%` }}>{s}</span>
-                ))}
-                <div className="absolute inset-0 opacity-20"
-                  style={{ background: `radial-gradient(circle at 50% 30%, ${form.accentColor}25, transparent 70%)` }} />
-              </div>
+                <p className="text-[10px] tracking-wider uppercase mb-4 opacity-50" style={{ color: form.accentColor }}>at the wedding ceremony of</p>
 
-              {/* Couple names */}
-              <p className="font-[family-name:var(--font-great-vibes)] text-3xl mb-0.5 relative z-[3]" style={{ color: form.accentColor }}>
-                {HARDCODED_CARD.groom}
-              </p>
-              <p className="text-lg opacity-40 select-none relative z-[3]" style={{ color: form.accentColor }}>♥</p>
-              <p className="font-[family-name:var(--font-great-vibes)] text-3xl mb-3 relative z-[3]" style={{ color: form.accentColor }}>
-                {HARDCODED_CARD.bride}
-              </p>
+                {/* Couple names */}
+                <p className="font-[family-name:var(--font-great-vibes)] text-5xl mb-2" style={{ color: form.accentColor }}>
+                  {HARDCODED_CARD.groom}
+                </p>
+                <p className="text-2xl my-2 opacity-30 select-none" style={{ color: form.accentColor }}>♥</p>
+                <p className="font-[family-name:var(--font-great-vibes)] text-5xl mb-6" style={{ color: form.accentColor }}>
+                  {HARDCODED_CARD.bride}
+                </p>
 
-              {/* Divider */}
-              <div className="flex items-center gap-2 mb-3 relative z-[3]">
-                <div className="w-6 h-px opacity-30" style={{ backgroundColor: form.accentColor }} />
-                <span className="text-xs opacity-40 select-none" style={{ color: form.accentColor }}>🪷</span>
-                <div className="w-6 h-px opacity-30" style={{ backgroundColor: form.accentColor }} />
-              </div>
+                <p className="text-sm tracking-widest uppercase opacity-25 mb-6" style={{ color: form.accentColor }}>
+                  Request the pleasure of your company
+                </p>
 
-              {/* Poruwa ceremony */}
-              <div className="relative z-[3] mb-2 px-4 py-1.5 rounded-lg border opacity-80" style={{ borderColor: `${form.accentColor}40`, backgroundColor: `${form.accentColor}10` }}>
-                <p className="text-[10px] tracking-wider uppercase opacity-60" style={{ color: form.accentColor }}>Poruwa Ceremony</p>
-                <p className="text-sm font-semibold" style={{ color: form.accentColor }}>{HARDCODED_CARD.poruwaTime}</p>
-              </div>
+                {/* Divider */}
+                <div className="flex items-center justify-center gap-2 mb-6">
+                  <div className="w-12 h-px opacity-20" style={{ backgroundColor: form.accentColor }} />
+                  <span className="text-sm select-none" style={{ color: form.accentColor }}>🪷</span>
+                  <div className="w-12 h-px opacity-20" style={{ backgroundColor: form.accentColor }} />
+                </div>
 
-              {/* Date & venue */}
-              <p className="font-[family-name:var(--font-playfair)] text-xs font-semibold mb-0.5 relative z-[3]" style={{ color: form.accentColor }}>{dateStr}</p>
-              <p className="text-[10px] opacity-50 mb-2 relative z-[3]" style={{ color: form.accentColor }}>{HARDCODED_CARD.time} onwards</p>
-              <p className="text-[10px] opacity-40 mb-2 relative z-[3]" style={{ color: form.accentColor }}>📍 {HARDCODED_CARD.venue}</p>
+                {/* Poruwa ceremony */}
+                <div className="mb-6 mx-auto max-w-xs px-6 py-4 rounded-xl border"
+                  style={{ borderColor: `${form.accentColor}30`, backgroundColor: `${form.accentColor}08` }}>
+                  <p className="text-xs tracking-widest uppercase opacity-50 mb-1" style={{ color: form.accentColor }}>🪷 Poruwa Ceremony</p>
+                  <p className="font-[family-name:var(--font-playfair)] text-2xl font-semibold" style={{ color: form.accentColor }}>{HARDCODED_CARD.poruwaTime}</p>
+                </div>
 
-              {/* Message */}
-              <p className="text-[10px] italic opacity-35 max-w-[180px] leading-relaxed relative z-[3]" style={{ color: form.accentColor }}>
-                &ldquo;{form.message}&rdquo;
-              </p>
+                {/* Date & time */}
+                <div className="mb-4">
+                  <p className="font-[family-name:var(--font-playfair)] text-xl mb-1" style={{ color: form.accentColor }}>{dateStr}</p>
+                  <p className="text-lg opacity-50" style={{ color: form.accentColor }}>{HARDCODED_CARD.time} onwards</p>
+                </div>
 
-              {/* Bottom ornament */}
-              <div className="mt-3 flex items-center gap-1 opacity-25 select-none relative z-[3]">
-                <span style={{ color: form.accentColor }}>✦</span>
-                <span className="text-[10px]" style={{ color: form.accentColor }}>forever & always</span>
-                <span style={{ color: form.accentColor }}>✦</span>
+                {/* Venue */}
+                <div className="mb-6">
+                  <p className="font-[family-name:var(--font-playfair)] text-lg" style={{ color: form.accentColor }}>📍 {HARDCODED_CARD.venue}</p>
+                </div>
+
+                {/* Message */}
+                <p className="text-base italic opacity-40 mb-8 max-w-sm mx-auto leading-relaxed" style={{ color: form.accentColor }}>
+                  &ldquo;{form.message}&rdquo;
+                </p>
+
+                {/* Bottom ornament */}
+                <div className="flex items-center justify-center gap-1 mb-6 opacity-15 select-none">
+                  <span style={{ color: form.accentColor }}>✦</span>
+                  <span className="text-xs" style={{ color: form.accentColor }}>forever & always</span>
+                  <span style={{ color: form.accentColor }}>✦</span>
+                </div>
+
+                {/* RSVP placeholder */}
+                <div className="px-8 py-3 rounded-full font-semibold text-sm tracking-wide inline-block"
+                  style={{ backgroundColor: form.accentColor, color: form.primaryColor }}>
+                  💌 RSVP Now
+                </div>
+                <p className="text-xs opacity-35 italic mt-2" style={{ color: form.accentColor }}>
+                  Kindly respond by {new Date(HARDCODED_CARD.date + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric" })}
+                </p>
               </div>
             </div>
           </div>
