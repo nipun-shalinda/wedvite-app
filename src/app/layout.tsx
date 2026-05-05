@@ -42,7 +42,7 @@ export default function RootLayout({
       lang="en"
       className={`${greatVibes.variable} ${playfair.variable} ${cormorant.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-[family-name:var(--font-cormorant)]">
+      <body suppressHydrationWarning className="min-h-full flex flex-col font-[family-name:var(--font-cormorant)]">
         {children}
       </body>
     </html>

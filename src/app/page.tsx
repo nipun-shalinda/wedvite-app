@@ -13,23 +13,6 @@ const fadeUp = (delay = 0) => ({
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-white text-gray-700">
-      {/* Navbar */}
-      <nav className="flex items-center justify-between px-6 py-4 max-w-5xl mx-auto">
-        <Image
-          src="/image/couple-photo.svg"
-          alt="Wedvite"
-          width={140}
-          height={36}
-          priority
-        />
-        <Link
-          href="/create"
-          className="text-sm font-semibold text-[#b8860b] hover:underline"
-        >
-          Create Invitation →
-        </Link>
-      </nav>
-
       {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="max-w-5xl mx-auto px-6 py-20 sm:py-28 text-center">
