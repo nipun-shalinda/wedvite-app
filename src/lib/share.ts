@@ -1,8 +1,12 @@
-import { DEFAULT_SHARE_MESSAGE } from "./constants";
 import type { CardData } from "./card-data";
+import { encodeCardData } from "./card-data";
 
 export function buildInviteUrl(card: CardData, inviteeName: string, baseUrl: string): string {
-  return `${baseUrl}/invite?to=${encodeURIComponent(inviteeName)}`;
+  if (card.googleScriptUrl) {
+    return `${baseUrl}/invite?s=${encodeURIComponent(card.googleScriptUrl)}&to=${encodeURIComponent(inviteeName)}`;
+  }
+  const encoded = encodeCardData(card);
+  return `${baseUrl}/invite?data=${encoded}&to=${encodeURIComponent(inviteeName)}`;
 }
 
 export function buildShareMessage(card: CardData, inviteeName: string, baseUrl: string): string {
@@ -11,14 +15,12 @@ export function buildShareMessage(card: CardData, inviteeName: string, baseUrl: 
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
 
-  return DEFAULT_SHARE_MESSAGE
-    .replace("{groomName}", card.groom)
-    .replace("{brideName}", card.bride)
-    .replace("{weddingDate}", dateStr)
-    .replace("{weddingTime}", card.time)
-    .replace("{poruwaTime}", card.poruwaTime)
-    .replace("{venue}", card.venue)
-    .replace("{inviteLink}", inviteLink);
+  let msg = `💍 You're Invited!\n\n${card.groom} & ${card.bride} would love for you to celebrate their special day!\n\n📅 ${dateStr}, ${card.time} onwards`;
+  if (card.showPoruwa && card.poruwaTime) {
+    msg += `\n🪷 Poruwa Ceremony at ${card.poruwaTime}`;
+  }
+  msg += `\n📍 ${card.venue}\n\nOpen your personal invitation here:\n🔗 ${inviteLink}\n\nWe can't wait to see you there! 💕`;
+  return msg;
 }
 
 export function whatsappUrl(message: string): string {

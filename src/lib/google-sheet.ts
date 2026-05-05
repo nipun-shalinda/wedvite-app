@@ -1,21 +1,17 @@
-import { GOOGLE_SCRIPT_URL } from "./constants";
-
-export async function addInvitee(name: string): Promise<void> {
-  if (!GOOGLE_SCRIPT_URL) return;
+export async function addInvitee(scriptUrl: string, name: string): Promise<void> {
+  if (!scriptUrl) return;
   try {
-    await fetch(GOOGLE_SCRIPT_URL, {
+    await fetch(scriptUrl, {
       method: "POST",
       body: JSON.stringify({ action: "add", name }),
     });
-  } catch {
-    // Silent fail — card works without sheet
-  }
+  } catch { /* silent */ }
 }
 
-export async function fetchInvitees(): Promise<string[]> {
-  if (!GOOGLE_SCRIPT_URL) return [];
+export async function fetchInvitees(scriptUrl: string): Promise<string[]> {
+  if (!scriptUrl) return [];
   try {
-    const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=fetch`);
+    const res = await fetch(`${scriptUrl}?action=fetch`);
     const data = await res.json();
     return data.names ?? [];
   } catch {
@@ -23,14 +19,33 @@ export async function fetchInvitees(): Promise<string[]> {
   }
 }
 
-export async function updateRsvp(name: string, participate: "Yes" | "No"): Promise<void> {
-  if (!GOOGLE_SCRIPT_URL) return;
+export async function updateRsvp(scriptUrl: string, name: string, participate: "Yes" | "No"): Promise<void> {
+  if (!scriptUrl) return;
   try {
-    await fetch(GOOGLE_SCRIPT_URL, {
+    await fetch(scriptUrl, {
       method: "POST",
       body: JSON.stringify({ action: "rsvp", name, participate }),
     });
+  } catch { /* silent */ }
+}
+
+export async function saveCardToSheet(scriptUrl: string, cardData: string): Promise<void> {
+  if (!scriptUrl) return;
+  try {
+    await fetch(scriptUrl, {
+      method: "POST",
+      body: JSON.stringify({ action: "saveCard", cardData }),
+    });
+  } catch { /* silent */ }
+}
+
+export async function getCardFromSheet(scriptUrl: string): Promise<string | null> {
+  if (!scriptUrl) return null;
+  try {
+    const res = await fetch(`${scriptUrl}?action=getCard`);
+    const data = await res.json();
+    return data.cardData ?? null;
   } catch {
-    // Silent fail
+    return null;
   }
 }

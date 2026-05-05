@@ -1,18 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getDefaultCard } from "@/lib/card-data";
+import { Suspense, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { decodeCardData } from "@/lib/card-data";
 import { buildShareMessage, buildInviteUrl, whatsappUrl, emailUrl } from "@/lib/share";
 import { addInvitee, fetchInvitees } from "@/lib/google-sheet";
 import Link from "next/link";
 
-interface InviteeEntry {
-  name: string;
-  link: string;
+export default function SharePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><p className="text-gray-400">Loading...</p></div>}>
+      <ShareContent />
+    </Suspense>
+  );
 }
 
-export default function SharePage() {
-  const card = getDefaultCard();
+interface InviteeEntry { name: string; link: string; }
+
+function ShareContent() {
+  const searchParams = useSearchParams();
+  const card = decodeCardData(searchParams.get("data") || "");
   const [inviteeName, setInviteeName] = useState("");
   const [invitees, setInvitees] = useState<InviteeEntry[]>([]);
   const [copied, setCopied] = useState<string | null>(null);
@@ -20,26 +27,33 @@ export default function SharePage() {
 
   const baseUrl = typeof window !== "undefined" ? window.location.origin : "";
 
-  // Load invitees from Google Sheet on mount
   useEffect(() => {
-    fetchInvitees().then((names) => {
+    if (!card?.googleScriptUrl) { setLoading(false); return; }
+    fetchInvitees(card.googleScriptUrl).then((names) => {
+      if (!card) return;
       const origin = window.location.origin;
-      setInvitees(names.map((name) => ({
-        name,
-        link: buildInviteUrl(card, name, origin),
-      })));
+      setInvitees(names.map((name) => ({ name, link: buildInviteUrl(card, name, origin) })));
       setLoading(false);
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  if (!card) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-gray-500">Invalid card data. <Link href="/create" className="underline text-[#b8860b]">Create a new card</Link></p>
+      </div>
+    );
+  }
+
   async function handleAddInvitee() {
+    if (!card) return;
     const name = inviteeName.trim();
     if (!name) return;
     const link = buildInviteUrl(card, name, baseUrl);
     setInvitees((prev) => [...prev, { name, link }]);
     setInviteeName("");
-    await addInvitee(name);
+    await addInvitee(card.googleScriptUrl, name);
   }
 
   function copyToClipboard(text: string, id: string) {
@@ -48,10 +62,11 @@ export default function SharePage() {
     setTimeout(() => setCopied(null), 2000);
   }
 
+  const dateStr = card.date ? new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : "";
+
   return (
     <div className="min-h-screen bg-white">
       <header className="bg-white border-b border-gray-200 px-6 py-4">
-        <Link href="/create" className="text-sm text-black/40 hover:text-black/70">← Edit Card</Link>
         <h1 className="text-xl font-[family-name:var(--font-playfair)] text-gray-800">
           {card.groom} & {card.bride} — Share
         </h1>
@@ -65,9 +80,11 @@ export default function SharePage() {
             {card.groom} & {card.bride}
           </p>
           <p className="text-sm opacity-60" style={{ color: card.accentColor }}>
-            {new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })} {card.time} onwards
+            {dateStr} {card.time} onwards
           </p>
-          <p className="text-sm opacity-50 mt-1" style={{ color: card.accentColor }}>🪷 Poruwa at {card.poruwaTime}</p>
+          {card.showPoruwa && card.poruwaTime && (
+            <p className="text-sm opacity-50 mt-1" style={{ color: card.accentColor }}>🪷 Poruwa at {card.poruwaTime}</p>
+          )}
           <p className="text-sm opacity-50 mt-1" style={{ color: card.accentColor }}>📍 {card.venue}</p>
         </div>
 
@@ -75,13 +92,10 @@ export default function SharePage() {
         <div className="bg-gray-50 rounded-xl shadow-sm p-6 mb-6 border border-gray-200">
           <h3 className="font-semibold mb-4 text-gray-800">Add Invitee Name</h3>
           <div className="flex gap-3">
-            <input
-              value={inviteeName}
-              onChange={(e) => setInviteeName(e.target.value)}
+            <input value={inviteeName} onChange={(e) => setInviteeName(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleAddInvitee()}
               placeholder="Guest name (e.g. Uncle Raj)"
-              className="flex-1 bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#b8860b]/40"
-            />
+              className="flex-1 bg-white border border-gray-300 rounded-lg py-2.5 px-4 text-gray-800 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#b8860b]/40" />
             <button onClick={handleAddInvitee}
               className="bg-[#b8860b] text-white px-6 py-2.5 rounded-lg font-medium hover:bg-[#a07608] transition">
               Generate Link
@@ -95,9 +109,7 @@ export default function SharePage() {
         ) : invitees.length > 0 ? (
           <div className="bg-gray-50 rounded-xl shadow-sm overflow-hidden border border-gray-200">
             <div className="px-6 py-4 border-b border-gray-200">
-              <h3 className="font-semibold text-gray-800">
-                {invitees.length} Invitee{invitees.length > 1 ? "s" : ""}
-              </h3>
+              <h3 className="font-semibold text-gray-800">{invitees.length} Invitee{invitees.length > 1 ? "s" : ""}</h3>
             </div>
             <div className="divide-y divide-gray-200">
               {invitees.map((inv, i) => {
@@ -128,9 +140,7 @@ export default function SharePage() {
             </div>
           </div>
         ) : (
-          <p className="text-center text-black/30 py-8">
-            Add invitee names above to generate personalized invitation links.
-          </p>
+          <p className="text-center text-black/30 py-8">Add invitee names above to generate personalized invitation links.</p>
         )}
       </main>
     </div>
