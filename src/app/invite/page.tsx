@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { decodeCardData } from "@/lib/card-data";
 import { updateRsvp } from "@/lib/google-sheet";
@@ -29,6 +29,18 @@ function InviteContent() {
   const [rsvpDone, setRsvpDone] = useState(false);
   const [attending, setAttending] = useState<boolean | null>(null);
   const [sending, setSending] = useState(false);
+  
+  // Audio state and refs
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isMuted, setIsMuted] = useState(false);
+
+  // Play music when card opens
+  useEffect(() => {
+    if (isOpen && audioRef.current) {
+      audioRef.current.volume = 0.5;
+      audioRef.current.play().catch(() => {});
+    }
+  }, [isOpen]);
 
   if (!card) {
     return (
@@ -297,6 +309,25 @@ function InviteContent() {
               {/* Content overlay with slight backdrop */}
               <div className="p-8 sm:p-12 text-center relative z-10">
                 <div className="relative z-10">
+                  {/* Mute / Unmute music button */}
+                  {isOpen && (
+                    <div className="flex justify-end mb-2">
+                      <button
+                        onClick={() => {
+                          if (audioRef.current) {
+                            audioRef.current.muted = !isMuted;
+                          }
+                          setIsMuted(!isMuted);
+                        }}
+                        className="text-xl opacity-50 hover:opacity-90 transition select-none"
+                        style={{ color: card.accentColor }}
+                        title={isMuted ? 'Unmute' : 'Mute'}
+                      >
+                        {isMuted ? '🔇' : '🔊'}
+                      </button>
+                    </div>
+                  )}
+
                   <motion.p
                     className="text-2xl mb-2 select-none"
                     initial={{ opacity: 0, scale: 0 }}
@@ -600,6 +631,14 @@ function InviteContent() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Audio element */}
+      <audio
+        ref={audioRef}
+        src="/music/love-song.mp3"
+        loop
+        preload="auto"
+      />
     </div>
   );
 }
