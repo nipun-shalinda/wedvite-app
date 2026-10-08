@@ -5,14 +5,21 @@ export interface CardData {
   bride: string;
   date: string;
   time: string;
+  endTime?: string;
   poruwaTime: string;
   venue: string;
+  venueName?: string;    // e.g. "GLAMOUR BALLROOM (2ND FLOOR)"
+  venueAddress?: string; // e.g. "Amaya Grand Hotel, 11/9 Malvilawatte, Giriulla"
   mapLink?: string;
   message: string;
   primaryColor: string;
   accentColor: string;
   pattern: string;
   font: string;
+  groomFather?: string;
+  groomMother?: string;
+  brideFather?: string;
+  brideMother?: string;
 }
 
 export function getDefaultCard(): CardData {
