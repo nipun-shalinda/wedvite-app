@@ -46,6 +46,54 @@ function InviteContent() {
   const [attending, setAttending] = useState<boolean | null>(null);
   const [sending,   setSending]   = useState(false);
 
+  // ── Countdown state ───────────────────────────────────────────────────────
+  const [countdown, setCountdown] = useState<{ days: number; hours: number; minutes: number; seconds: number; past: boolean }>({ days: 0, hours: 0, minutes: 0, seconds: 0, past: false });
+
+  useEffect(() => {
+    // Parse human-readable time strings (e.g. "9.00 AM", "9:00 AM", "14:30") → "HH:MM"
+    function parseTime(raw: string): string {
+      const s = raw.trim();
+      // Already 24h HH:MM or HH:MM:SS
+      if (/^\d{1,2}:\d{2}/.test(s) && !/am|pm/i.test(s)) {
+        const [h, m] = s.split(":");
+        return String(Number(h)).padStart(2, "0") + ":" + m.slice(0, 2).padStart(2, "0");
+      }
+      // 12h with AM/PM — dots or colons as separator
+      const match = s.match(/(\d{1,2})[.:]?(\d{2})?\s*(am|pm)/i);
+      if (match) {
+        let h = Number(match[1]);
+        const m = Number(match[2] ?? 0);
+        const isPm = /pm/i.test(match[3]);
+        if (isPm && h !== 12) h += 12;
+        if (!isPm && h === 12) h = 0;
+        return String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
+      }
+      return "00:00"; // fallback
+    }
+
+    const timeStr = card?.time ? parseTime(card.time) : "00:00";
+    const targetTime = card
+      ? new Date(card.date + "T" + timeStr + ":00").getTime()
+      : new Date("9999-01-01T00:00:00").getTime();
+
+    function tick() {
+      const now  = Date.now();
+      const diff = targetTime - now;
+      if (diff <= 0) {
+        setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0, past: true });
+        return;
+      }
+      const days    = Math.floor(diff / 86_400_000);
+      const hours   = Math.floor((diff % 86_400_000) / 3_600_000);
+      const minutes = Math.floor((diff % 3_600_000)  / 60_000);
+      const seconds = Math.floor((diff % 60_000)     / 1_000);
+      setCountdown({ days, hours, minutes, seconds, past: false });
+    }
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [card?.date, card?.time]);
+
   const audioRef           = useRef<HTMLAudioElement | null>(null);
   const [isMuted, setIsMuted] = useState(false);
 
@@ -362,23 +410,25 @@ function InviteContent() {
                  }}>
 
               {/* ── TOP MANDALA ── */}
-              <div className="relative w-full overflow-hidden" style={{ height: 140 }}>
-                {/* Header decoration — spans full card width */}
+              <div className="relative w-full overflow-hidden" style={{ height: 80 }}>
+                {/* Header decoration — 67% width, centred */}
                 <Mandala color={accent}
-                  className="absolute top-0 left-0 w-full opacity-55"
-                  style={{ height: 140, objectFit: "cover", objectPosition: "center top" } as React.CSSProperties} />
+                  className="absolute top-0 left-1/2 -translate-x-1/2 opacity-55"
+                  style={{ width: "67%", height: 80, objectFit: "cover", objectPosition: "center top" } as React.CSSProperties} />
                 {/* Corner foliage overlaid on top of header */}
-                <CornerFoliage color={accent} className="absolute top-0 left-0 w-24 h-24 opacity-70" />
                 <CornerFoliage color={accent}
-                  className="absolute top-0 right-0 w-24 h-24 opacity-70"
-                  style={{ transform: "scaleX(-1)" } as React.CSSProperties} />
+                  className="absolute top-0 w-32 h-40 opacity-70"
+                  style={{ left: "-10%" } as React.CSSProperties} />
+                <CornerFoliage color={accent}
+                  className="absolute top-0 w-32 h-40 opacity-70"
+                  style={{ right: "-10%", transform: "scaleX(-1)" } as React.CSSProperties} />
               </div>
 
               {/* ── CONTENT ── */}
-              <div className="px-8 pb-0 text-center relative z-10">
+              <div className="pb-0 text-center relative z-10">
 
                 {/* Mute button */}
-                <div className="flex justify-end -mt-2 mb-2">
+                <div className="flex justify-end px-8 -mt-2 mb-2">
                   <button
                     onClick={() => {
                       if (audioRef.current) audioRef.current.muted = !isMuted;
@@ -392,9 +442,11 @@ function InviteContent() {
                   </button>
                 </div>
 
-                {/* ── Couple illustration ── */}
+                {/* ══════════════════════════════════════════════
+                    SECTION 1 — Couple card
+                ══════════════════════════════════════════════ */}
                 <motion.div
-                  className="flex justify-center mb-2"
+                  className="flex justify-center mb-4"
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
@@ -407,94 +459,240 @@ function InviteContent() {
                   />
                 </motion.div>
 
-                {/* Lotus divider 1 */}
+                {/* Section divider */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-                  <LotusDivider color={accent} className="w-full opacity-50 mb-4" />
+                  <LotusDivider color={accent} className="w-full opacity-50" />
                 </motion.div>
 
-                {/* Family lines */}
-                <motion.div className="mb-4 space-y-0.5"
-                  style={{ color: accent }}
-                  initial={{ opacity: 0, y: 14 }} animate={{ opacity: 0.65, y: 0 }}
-                  transition={{ delay: 0.35 }}>
-                  <p className="text-[10px] tracking-widest uppercase">Mr. &amp; Mrs. Herath</p>
-                  <p className="text-[9px] tracking-wider uppercase opacity-60">together with</p>
-                  <p className="text-[10px] tracking-widest uppercase">Mr. &amp; Mrs. Rathnayake</p>
-                  <p className="text-[9px] tracking-wider uppercase opacity-55 mt-1">
-                    request the pleasure of the presence of
+                {/* ══════════════════════════════════════════════
+                    SECTION 2 — Invitation
+                ══════════════════════════════════════════════ */}
+                <motion.div
+                  className="px-8 pt-6 pb-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.35 }}
+                >
+                  {/* WITH JOY IN OUR HEARTS */}
+                  <p className="text-[9px] tracking-[0.35em] uppercase mb-1"
+                     style={{ color: accent, opacity: 0.55 }}>
+                    With Joy in Our Hearts
                   </p>
-                  <p className="font-[family-name:var(--font-great-vibes)] text-2xl mt-0.5"
-                     style={{ opacity: 1 }}>
-                    {inviteeName}
+
+                  {/* You&apos;re Invited! */}
+                  <p className="font-[family-name:var(--font-playfair)] text-2xl font-semibold mb-1"
+                     style={{ color: accent }}>
+                    You&apos;re Invited!
                   </p>
+
+                  {/* the wedding of */}
+                  <p className="text-[9px] tracking-widest uppercase mb-3"
+                     style={{ color: accent, opacity: 0.45 }}>
+                    the wedding of
+                  </p>
+
+                  {/* Groom name */}
+                  <motion.h1
+                    className="font-[family-name:var(--font-great-vibes)] text-5xl sm:text-6xl mb-0 leading-tight"
+                    style={{ color: accent }}
+                    initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.45, type: "spring" }}>
+                    {card.groom}
+                  </motion.h1>
+
+                  {/* & */}
+                  <p className="text-base tracking-[0.25em] my-1 select-none font-[family-name:var(--font-playfair)]"
+                     style={{ color: accent, opacity: 0.50 }}>
+                    &amp;
+                  </p>
+
+                  {/* Bride name */}
+                  <motion.h1
+                    className="font-[family-name:var(--font-great-vibes)] text-5xl sm:text-6xl mb-4 leading-tight"
+                    style={{ color: accent }}
+                    initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.52, type: "spring" }}>
+                    {card.bride}
+                  </motion.h1>
+
+
                 </motion.div>
-
-                <motion.p className="text-[9px] tracking-wider uppercase mb-3"
-                  style={{ color: accent, opacity: 0.5 }}
-                  initial={{ opacity: 0 }} animate={{ opacity: 0.5 }}
-                  transition={{ delay: 0.4 }}>
-                  at the wedding ceremony of
-                </motion.p>
-
-                {/* Names */}
-                <motion.h1
-                  className="font-[family-name:var(--font-great-vibes)] text-5xl sm:text-6xl mb-0"
-                  style={{ color: accent }}
-                  initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.45, type: "spring" }}>
-                  {card.groom}
-                </motion.h1>
-                <motion.p className="text-xl my-1 select-none"
-                  style={{ color: accent, opacity: 0.28 }}
-                  initial={{ opacity: 0 }} animate={{ opacity: 0.28 }}
-                  transition={{ delay: 0.52 }}>
-                  ♥
-                </motion.p>
-                <motion.h1
-                  className="font-[family-name:var(--font-great-vibes)] text-5xl sm:text-6xl mb-4"
-                  style={{ color: accent }}
-                  initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.58, type: "spring" }}>
-                  {card.bride}
-                </motion.h1>
 
                 {/* Lotus divider 2 */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}>
-                  <LotusDivider color={accent} className="w-full opacity-45 mb-4" />
+                  <LotusDivider color={accent} className="w-full opacity-45" />
                 </motion.div>
 
-                {/* Poruwa ceremony box */}
-                {card.poruwaTime && (
-                  <motion.div
-                    className="mb-4 mx-auto max-w-xs px-5 py-3 rounded-xl"
-                    style={{
-                      border: `1px solid ${accent}30`,
-                      background: `linear-gradient(135deg, ${accent}06, ${accent}10)`,
-                    }}
-                    initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.7 }}>
-                    <p className="text-[9px] tracking-widest uppercase mb-0.5"
-                       style={{ color: accent, opacity: 0.55 }}>
-                      🪷 Poruwa Ceremony
-                    </p>
-                    <p className="font-[family-name:var(--font-playfair)] text-2xl font-semibold"
-                       style={{ color: accent }}>
-                      {card.poruwaTime}
-                    </p>
-                  </motion.div>
-                )}
-
-                {/* Date & Time */}
-                <motion.div className="mb-3"
-                  initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.75 }}>
-                  <p className="font-[family-name:var(--font-playfair)] text-base mb-0.5"
+                {/* ══════════════════════════════════════════════
+                    SECTION 3 — Family introduction
+                ══════════════════════════════════════════════ */}
+                <motion.div
+                  className="px-10 pt-7 pb-6 text-center"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.68 }}
+                >
+                  {/* Invitee name */}
+                  <p className="font-[family-name:var(--font-great-vibes)] text-4xl leading-snug mb-1"
                      style={{ color: accent }}>
-                    {dateStr}
+                    {inviteeName}
                   </p>
-                  <p className="text-sm" style={{ color: accent, opacity: 0.55 }}>
-                    {card.time} onwards
+
+                  {/* Thin rule */}
+                  <div className="flex items-center gap-3 my-3">
+                    <div className="flex-1 h-px" style={{ backgroundColor: `${accent}30` }} />
+                    <span className="text-[10px] tracking-[0.3em] uppercase"
+                          style={{ color: accent, opacity: 0.45 }}>cordially invited</span>
+                    <div className="flex-1 h-px" style={{ backgroundColor: `${accent}30` }} />
+                  </div>
+
+                  <p className="font-[family-name:var(--font-cormorant)] text-[13px] leading-relaxed mb-6"
+                     style={{ color: accent, opacity: 0.60 }}>
+                    You are cordially invited to celebrate<br />the joyous union of
                   </p>
+
+                  {/* —— BRIDE BOX —— */}
+                  <div className="relative rounded-xl px-5 py-5 mb-0"
+                       style={{
+                         border: `1px solid ${accent}30`,
+                         background: `linear-gradient(145deg, ${accent}07 0%, ${accent}12 100%)`,
+                         boxShadow: `inset 0 1px 3px ${accent}10`,
+                       }}>
+                    {/* Corner diamonds */}
+                    <span className="absolute top-2 left-2 text-[8px] select-none" style={{ color: `${accent}40` }}>◆</span>
+                    <span className="absolute top-2 right-2 text-[8px] select-none" style={{ color: `${accent}40` }}>◆</span>
+                    <span className="absolute bottom-2 left-2 text-[8px] select-none" style={{ color: `${accent}40` }}>◆</span>
+                    <span className="absolute bottom-2 right-2 text-[8px] select-none" style={{ color: `${accent}40` }}>◆</span>
+
+                    <p className="text-[9px] tracking-[0.3em] uppercase mb-2"
+                       style={{ color: accent, opacity: 0.40 }}>
+                      Bride
+                    </p>
+                    <p className="font-[family-name:var(--font-great-vibes)] text-4xl leading-tight"
+                       style={{ color: accent }}>
+                      {card.bride}
+                    </p>
+                    <div className="w-10 h-px mx-auto my-2" style={{ backgroundColor: `${accent}35` }} />
+                    <p className="font-[family-name:var(--font-cormorant)] text-[11px] italic"
+                       style={{ color: accent, opacity: 0.50 }}>
+                      Beloved daughter of
+                    </p>
+                    <p className="font-[family-name:var(--font-cormorant)] text-[13px] font-semibold leading-snug mt-1"
+                       style={{ color: accent, opacity: 0.80 }}>
+                      {card.brideFather ?? ""}
+                      {card.brideFather && card.brideMother ? (<><br />&amp;<br /></>) : ""}
+                      {card.brideMother ?? ""}
+                    </p>
+                  </div>
+
+                  {/* —— & separator —— */}
+                  <div className="flex items-center justify-center gap-2 my-3">
+                    <div className="w-6 h-px" style={{ backgroundColor: `${accent}25` }} />
+                    <p className="font-[family-name:var(--font-great-vibes)] text-3xl leading-none select-none"
+                       style={{ color: accent, opacity: 0.50 }}>
+                      &amp;
+                    </p>
+                    <div className="w-6 h-px" style={{ backgroundColor: `${accent}25` }} />
+                  </div>
+
+                  {/* —— GROOM BOX —— */}
+                  <div className="relative rounded-xl px-5 py-5"
+                       style={{
+                         border: `1px solid ${accent}30`,
+                         background: `linear-gradient(145deg, ${accent}07 0%, ${accent}12 100%)`,
+                         boxShadow: `inset 0 1px 3px ${accent}10`,
+                       }}>
+                    {/* Corner diamonds */}
+                    <span className="absolute top-2 left-2 text-[8px] select-none" style={{ color: `${accent}40` }}>◆</span>
+                    <span className="absolute top-2 right-2 text-[8px] select-none" style={{ color: `${accent}40` }}>◆</span>
+                    <span className="absolute bottom-2 left-2 text-[8px] select-none" style={{ color: `${accent}40` }}>◆</span>
+                    <span className="absolute bottom-2 right-2 text-[8px] select-none" style={{ color: `${accent}40` }}>◆</span>
+
+                    <p className="text-[9px] tracking-[0.3em] uppercase mb-2"
+                       style={{ color: accent, opacity: 0.40 }}>
+                      Groom
+                    </p>
+                    <p className="font-[family-name:var(--font-great-vibes)] text-4xl leading-tight"
+                       style={{ color: accent }}>
+                      {card.groom}
+                    </p>
+                    <div className="w-10 h-px mx-auto my-2" style={{ backgroundColor: `${accent}35` }} />
+                    <p className="font-[family-name:var(--font-cormorant)] text-[11px] italic"
+                       style={{ color: accent, opacity: 0.50 }}>
+                      Beloved son of
+                    </p>
+                    <p className="font-[family-name:var(--font-cormorant)] text-[13px] font-semibold leading-snug mt-1"
+                       style={{ color: accent, opacity: 0.80 }}>
+                      {card.groomFather ?? ""}
+                      {card.groomFather && card.groomMother ? (<><br />&amp;<br /></>) : ""}
+                      {card.groomMother ?? ""}
+                    </p>
+                  </div>
+                </motion.div>
+
+                {/* Lotus divider 3 (between section 3 and date) */}
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.72 }}>
+                  <LotusDivider color={accent} className="w-full opacity-40 mb-4" />
+                </motion.div>
+
+                {/* ══════════════════════════════════════════════
+                    SECTION 4 — Date & Time
+                ══════════════════════════════════════════════ */}
+                <motion.div
+                  className="px-8 py-5 text-center mb-2"
+                  initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.74 }}
+                >
+                  {/* Day label */}
+                  <p className="text-[9px] tracking-[0.35em] uppercase mb-3"
+                     style={{ color: accent, opacity: 0.45 }}>
+                    Date &amp; Time
+                  </p>
+
+                  {/* Full date — large */}
+                  <p className="font-[family-name:var(--font-cormorant)] text-[11px] tracking-[0.25em] uppercase"
+                     style={{ color: accent, opacity: 0.55 }}>
+                    {new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()}
+                  </p>
+                  <p className="font-[family-name:var(--font-playfair)] text-2xl font-semibold leading-tight mt-0.5"
+                     style={{ color: accent }}>
+                    {new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" }).toUpperCase()}
+                  </p>
+
+                  {/* Thin rule */}
+                  <div className="w-12 h-px mx-auto my-3" style={{ backgroundColor: `${accent}35` }} />
+
+                  {/* Time range */}
+                  <p className="font-[family-name:var(--font-cormorant)] text-[13px] tracking-wide"
+                     style={{ color: accent, opacity: 0.65 }}>
+                    {card.time}{card.endTime ? ` — ${card.endTime}` : " onwards"}
+                  </p>
+
+                  {/* Poruwa */}
+                  {card.poruwaTime && (
+                    <>
+                      <div className="flex items-center gap-2 my-3">
+                        <div className="flex-1 h-px" style={{ backgroundColor: `${accent}20` }} />
+                        <span className="text-[9px] tracking-[0.2em] uppercase" style={{ color: accent, opacity: 0.35 }}>🪷</span>
+                        <div className="flex-1 h-px" style={{ backgroundColor: `${accent}20` }} />
+                      </div>
+                      <div className="inline-block mx-auto mt-1 px-5 py-3 rounded-xl"
+                           style={{
+                             background: `linear-gradient(135deg, ${accent}18, ${accent}28)`,
+                             border: `1.5px solid ${accent}55`,
+                             boxShadow: `0 2px 16px ${accent}25, inset 0 1px 2px ${accent}15`,
+                           }}>
+                        <p className="text-[9px] tracking-[0.35em] uppercase mb-1"
+                           style={{ color: accent, opacity: 0.60 }}>
+                          🪷 Poruwa Ceremony
+                        </p>
+                        <p className="font-[family-name:var(--font-playfair)] text-2xl font-semibold"
+                           style={{ color: accent }}>
+                          {card.poruwaTime}
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </motion.div>
 
                 {/* Lotus divider 3 */}
@@ -502,20 +700,196 @@ function InviteContent() {
                   <LotusDivider color={accent} className="w-full opacity-40 mb-3" />
                 </motion.div>
 
-                {/* Venue */}
-                <motion.div className="mb-4"
+                {/* ══════════════════════════════════════════════
+                    SECTION 5 — Countdown
+                ══════════════════════════════════════════════ */}
+                <motion.div
+                  className="px-6 py-7 text-center relative"
                   initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.85 }}>
-                  <p className="font-[family-name:var(--font-playfair)] text-base"
-                     style={{ color: accent }}>
-                    📍 {card.venue}
+                  transition={{ delay: 0.83 }}
+                >
+                  {!countdown.past ? (
+                    <>
+                      {/* Decorative top line */}
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, transparent, ${accent}35)` }} />
+                        <span className="text-sm select-none" style={{ color: `${accent}60` }}>🌸</span>
+                        <div className="flex-1 h-px" style={{ background: `linear-gradient(to left, transparent, ${accent}35)` }} />
+                      </div>
+
+                      {/* "Wait for the magic" label */}
+                      <motion.p
+                        className="font-[family-name:var(--font-great-vibes)] text-3xl leading-snug mb-1"
+                        style={{ color: accent }}
+                        animate={{ opacity: [0.70, 1, 0.70] }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                      >
+                        Wait for the magic
+                      </motion.p>
+
+                      <p className="text-[9px] tracking-[0.35em] uppercase mb-5"
+                         style={{ color: accent, opacity: 0.45 }}>
+                        Counting Down To Forever
+                      </p>
+
+                      {/* Countdown boxes */}
+                      <div className="flex justify-center gap-2.5">
+                        {([
+                          { label: "Days",    value: countdown.days    },
+                          { label: "Hours",   value: countdown.hours   },
+                          { label: "Mins",    value: countdown.minutes  },
+                          { label: "Secs",    value: countdown.seconds  },
+                        ] as { label: string; value: number }[]).map(({ label, value }, i) => (
+                          <motion.div
+                            key={label}
+                            className="flex flex-col items-center justify-center rounded-2xl px-3 py-4 min-w-[58px] relative overflow-hidden"
+                            style={{
+                              border: `1.5px solid ${accent}40`,
+                              background: `linear-gradient(160deg, ${accent}10 0%, ${accent}1a 100%)`,
+                              boxShadow: `0 4px 18px ${accent}20, inset 0 1px 0 rgba(255,255,255,0.6)`,
+                            }}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.9 + i * 0.07, type: "spring", stiffness: 220, damping: 18 }}
+                          >
+                            {/* Subtle shimmer */}
+                            <div className="absolute inset-0 pointer-events-none"
+                                 style={{ background: `linear-gradient(135deg, rgba(255,255,255,0.18) 0%, transparent 60%)` }} />
+
+                            <motion.span
+                              key={value}
+                              className="font-[family-name:var(--font-playfair)] text-2xl font-bold leading-none z-10"
+                              style={{ color: accent }}
+                              initial={{ opacity: 0, scale: 0.7, y: -8 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              transition={{ duration: 0.22, ease: "easeOut" }}
+                            >
+                              {String(value).padStart(2, "0")}
+                            </motion.span>
+
+                            <div className="w-6 h-px my-1.5 z-10" style={{ backgroundColor: `${accent}30` }} />
+
+                            <span className="text-[8px] tracking-[0.25em] uppercase z-10"
+                                  style={{ color: accent, opacity: 0.50 }}>
+                              {label}
+                            </span>
+                          </motion.div>
+                        ))}
+                      </div>
+
+                      {/* Decorative bottom line */}
+                      <div className="flex items-center gap-3 mt-5">
+                        <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, transparent, ${accent}30)` }} />
+                        <motion.span
+                          className="text-[10px] font-[family-name:var(--font-cormorant)] italic tracking-wider"
+                          style={{ color: accent, opacity: 0.50 }}
+                          animate={{ opacity: [0.35, 0.65, 0.35] }}
+                          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                        >
+                          ✦ every second counts ✦
+                        </motion.span>
+                        <div className="flex-1 h-px" style={{ background: `linear-gradient(to left, transparent, ${accent}30)` }} />
+                      </div>
+                    </>
+                  ) : (
+                    <motion.div
+                      className="py-4"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ type: "spring" }}
+                    >
+                      <p className="text-[9px] tracking-[0.35em] uppercase mb-3"
+                         style={{ color: accent, opacity: 0.45 }}>
+                        The Celebration Has Begun
+                      </p>
+                      <p className="font-[family-name:var(--font-great-vibes)] text-3xl"
+                         style={{ color: accent, opacity: 0.85 }}>
+                        🪷 Today, forever begins 🪷
+                      </p>
+                    </motion.div>
+                  )}
+                </motion.div>
+
+                {/* Lotus divider 4 — after countdown */}
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.86 }}>
+                  <LotusDivider color={accent} className="w-full opacity-40 mb-3" />
+                </motion.div>
+
+                {/* ══════════════════════════════════════════════
+                    SECTION 6 — Venue
+                ══════════════════════════════════════════════ */}
+                <motion.div
+                  className="px-6 pb-6 text-center"
+                  initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.88 }}
+                >
+                  {/* Section label */}
+                  <p className="text-[9px] tracking-[0.35em] uppercase mb-4"
+                     style={{ color: accent, opacity: 0.45 }}>
+                    Venue
                   </p>
+
+                  {/* Pin icon */}
+                  <div
+                    className="inline-flex items-center justify-center w-10 h-10 rounded-full mb-3"
+                    style={{
+                      background: `linear-gradient(135deg, ${accent}22, ${accent}38)`,
+                      border: `1.5px solid ${accent}50`,
+                      boxShadow: `0 2px 12px ${accent}30`,
+                    }}
+                  >
+                    <span className="text-lg">📍</span>
+                  </div>
+
+                  {/* Hall name */}
+                  <p
+                    className="font-[family-name:var(--font-playfair)] text-base font-bold tracking-wide leading-tight mb-1"
+                    style={{ color: accent }}
+                  >
+                    {card.venueName ?? card.venue}
+                  </p>
+
+                  {/* Thin rule */}
+                  <div className="w-10 h-px mx-auto my-2.5" style={{ backgroundColor: `${accent}40` }} />
+
+                  {/* Address lines */}
+                  {card.venueAddress ? (
+                    card.venueAddress.split("\n").map((line, i) => (
+                      <p
+                        key={i}
+                        className="font-[family-name:var(--font-cormorant)] text-[13px] leading-relaxed"
+                        style={{ color: accent, opacity: i === 0 ? 0.80 : 0.60 }}
+                      >
+                        {line}
+                      </p>
+                    ))
+                  ) : (
+                    <p className="font-[family-name:var(--font-cormorant)] text-[13px] leading-relaxed"
+                       style={{ color: accent, opacity: 0.65 }}>
+                      {card.venue}
+                    </p>
+                  )}
+
+                  {/* Google Maps button */}
                   {card.mapLink && (
-                    <a href={card.mapLink} target="_blank" rel="noopener noreferrer"
-                       className="inline-block mt-1 text-xs underline transition hover:opacity-90"
-                       style={{ color: accent, opacity: 0.45 }}>
-                      Get Directions →
-                    </a>
+                    <motion.a
+                      href={card.mapLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 mt-4 px-5 py-2 rounded-full text-[11px] font-semibold tracking-wide transition"
+                      style={{
+                        backgroundColor: accent,
+                        color: PARCHMENT,
+                        boxShadow: `0 3px 14px ${accent}40`,
+                      }}
+                      whileHover={{ scale: 1.05, boxShadow: `0 6px 22px ${accent}55` }}
+                      whileTap={{ scale: 0.96 }}
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                      </svg>
+                      Get Directions
+                    </motion.a>
                   )}
                 </motion.div>
 
@@ -530,70 +904,216 @@ function InviteContent() {
                   </motion.p>
                 )}
 
-                {/* ── RSVP section ── */}
-                <div className="mb-2">
+                {/* Lotus divider 3 */}
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.80 }}>
+                  <LotusDivider color={accent} className="w-full opacity-40 mb-3" />
+                </motion.div>
+
+                {/* ══════════════════════════════════════════════
+                    SECTION 7 — RSVP
+                ══════════════════════════════════════════════ */}
+                <motion.div
+                  className="px-6 pb-8 text-center"
+                  initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.0 }}
+                >
                   {rsvpDone ? (
-                    <motion.div initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
-                                className="py-4">
-                      <p className="text-2xl mb-1">🪷</p>
-                      <p className="font-semibold text-sm" style={{ color: accent }}>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
+                      transition={{ type: "spring" }}
+                      className="py-6"
+                    >
+                      <motion.p
+                        className="text-3xl mb-3"
+                        animate={{ scale: [1, 1.15, 1] }}
+                        transition={{ duration: 1.2, repeat: 2 }}
+                      >🪷</motion.p>
+                      <p className="font-[family-name:var(--font-great-vibes)] text-3xl mb-1"
+                         style={{ color: accent }}>
                         Thank you, {inviteeName}!
                       </p>
-                      <p className="text-xs mt-0.5" style={{ color: accent, opacity: 0.40 }}>
-                        Your response has been noted.
-                      </p>
-                    </motion.div>
-                  ) : !showRsvp ? (
-                    <motion.div className="flex flex-col items-center gap-1.5"
-                      initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 1.0 }}>
-                      <motion.button
-                        onClick={() => setShowRsvp(true)}
-                        className="px-8 py-2.5 rounded-full font-semibold text-sm tracking-wide shadow-md transition"
-                        style={{ backgroundColor: accent, color: PARCHMENT }}
-                        whileHover={{ scale: 1.05, boxShadow: `0 6px 24px ${accent}45` }}
-                        whileTap={{ scale: 0.95 }}>
-                        💌 RSVP Now
-                      </motion.button>
-                      <p className="text-[10px] italic" style={{ color: accent, opacity: 0.38 }}>
-                        Kindly respond by{" "}
-                        {new Date(card.date + "T00:00:00").toLocaleDateString("en-US", {
-                          month: "long", day: "numeric",
-                        })}
+                      <p className="font-[family-name:var(--font-cormorant)] text-[13px] mt-1"
+                         style={{ color: accent, opacity: 0.55 }}>
+                        Your response has been noted.<br />We can&apos;t wait to see you!
                       </p>
                     </motion.div>
                   ) : (
-                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                                className="space-y-3 text-left">
-                      <div className="flex gap-2">
-                        {[true, false].map((val) => (
-                          <button key={String(val)} type="button"
-                            onClick={() => setAttending(val)}
-                            className="flex-1 py-2 rounded-lg border-2 text-xs font-medium transition"
-                            style={{
-                              borderColor:   attending === val ? accent : `${accent}28`,
-                              backgroundColor: attending === val ? accent : "transparent",
-                              color:         attending === val ? PARCHMENT : accent,
-                            }}>
-                            {val ? "🪷 Joyfully Accept" : "😔 Regretfully Decline"}
-                          </button>
-                        ))}
+                    <>
+                      {/* Decorative line */}
+                      <div className="flex items-center gap-3 mb-5">
+                        <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, transparent, ${accent}35)` }} />
+                        <span className="text-sm select-none" style={{ color: `${accent}55` }}>💌</span>
+                        <div className="flex-1 h-px" style={{ background: `linear-gradient(to left, transparent, ${accent}35)` }} />
                       </div>
-                      {attending !== null && (
-                        <button onClick={handleRsvp} disabled={sending}
-                          className="w-full py-2.5 rounded-full font-semibold text-sm shadow-md transition disabled:opacity-55"
-                          style={{ backgroundColor: accent, color: PARCHMENT }}>
-                          {sending ? "Sending… 💌" : "Send RSVP 💌"}
-                        </button>
+
+                      {/* Heading */}
+                      <p className="text-[9px] tracking-[0.35em] uppercase mb-1"
+                         style={{ color: accent, opacity: 0.45 }}>
+                        RSVP
+                      </p>
+                      <p className="font-[family-name:var(--font-great-vibes)] text-4xl leading-snug mb-3"
+                         style={{ color: accent }}>
+                        Will You Join Us?
+                      </p>
+
+                      {/* Description */}
+                      <p className="font-[family-name:var(--font-cormorant)] text-[13px] leading-relaxed mb-1"
+                         style={{ color: accent, opacity: 0.60 }}>
+                        We would be absolutely thrilled to celebrate with you.
+                      </p>
+                      <p className="font-[family-name:var(--font-cormorant)] text-[12px] italic mb-6"
+                         style={{ color: accent, opacity: 0.45 }}>
+                        Kindly respond by 22.11.2026
+                      </p>
+
+                      {!showRsvp ? (
+                        <motion.button
+                          onClick={() => setShowRsvp(true)}
+                          className="px-10 py-3 rounded-full font-semibold text-sm tracking-widest uppercase shadow-lg transition"
+                          style={{
+                            backgroundColor: accent,
+                            color: PARCHMENT,
+                            boxShadow: `0 4px 20px ${accent}45`,
+                            letterSpacing: "0.18em",
+                          }}
+                          whileHover={{ scale: 1.06, boxShadow: `0 8px 28px ${accent}55` }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          RSVP Now
+                        </motion.button>
+                      ) : (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                          className="space-y-3"
+                        >
+                          {/* Accept / Decline buttons */}
+                          <div className="flex gap-2">
+                            {([true, false] as const).map((val) => (
+                              <motion.button
+                                key={String(val)}
+                                type="button"
+                                onClick={() => setAttending(val)}
+                                className="flex-1 py-3 rounded-xl text-xs font-semibold tracking-wide transition"
+                                style={{
+                                  border: `1.5px solid ${attending === val ? accent : `${accent}30`}`,
+                                  backgroundColor: attending === val ? accent : `${accent}08`,
+                                  color: attending === val ? PARCHMENT : accent,
+                                }}
+                                whileHover={{ scale: 1.03 }}
+                                whileTap={{ scale: 0.97 }}
+                              >
+                                {val ? "🪷 Joyfully Accept" : "😔 Regretfully Decline"}
+                              </motion.button>
+                            ))}
+                          </div>
+
+                          {attending !== null && (
+                            <motion.button
+                              onClick={handleRsvp}
+                              disabled={sending}
+                              className="w-full py-3 rounded-full font-semibold text-sm tracking-widest uppercase shadow-md transition disabled:opacity-55"
+                              style={{
+                                backgroundColor: accent,
+                                color: PARCHMENT,
+                                boxShadow: `0 4px 18px ${accent}40`,
+                                letterSpacing: "0.15em",
+                              }}
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ type: "spring" }}
+                              whileHover={{ scale: 1.04 }}
+                              whileTap={{ scale: 0.96 }}
+                            >
+                              {sending ? "Sending… 💌" : "Send RSVP 💌"}
+                            </motion.button>
+                          )}
+                        </motion.div>
                       )}
-                    </motion.div>
+                    </>
                   )}
-                </div>
+                </motion.div>
               </div>
+
+              {/* ══════════════════════════════════════════════
+                  SECTION 8 — With Love sign-off
+              ══════════════════════════════════════════════ */}
+              <motion.div
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1 }}
+              >
+                <LotusDivider color={accent} className="w-full opacity-40" />
+              </motion.div>
+
+              <motion.div
+                className="px-6 py-8 text-center relative"
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.15 }}
+              >
+                {/* Floating petals */}
+                {["-18%", "18%", "-10%", "10%"].map((x, i) => (
+                  <motion.span
+                    key={i}
+                    className="absolute text-xs select-none pointer-events-none"
+                    style={{ left: "50%", top: i < 2 ? "8%" : "85%", translateX: x }}
+                    animate={{ y: [0, -6, 0], opacity: [0.4, 0.75, 0.4] }}
+                    transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: "easeInOut", delay: i * 0.4 }}
+                  >
+                    🪷
+                  </motion.span>
+                ))}
+
+                {/* "With Love" */}
+                <p
+                  className="text-[9px] tracking-[0.4em] uppercase mb-2"
+                  style={{ color: accent, opacity: 0.45 }}
+                >
+                  With Love
+                </p>
+
+                {/* Thin ornamental rule */}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, transparent, ${accent}40)` }} />
+                  <span className="text-[10px] select-none" style={{ color: `${accent}50` }}>✶</span>
+                  <div className="flex-1 h-px" style={{ background: `linear-gradient(to left, transparent, ${accent}40)` }} />
+                </div>
+
+                {/* Bride & Groom — one line */}
+                <motion.div
+                  className="flex items-baseline justify-center gap-3"
+                  initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 1.25, type: "spring", stiffness: 180, damping: 18 }}
+                >
+                  <span className="font-[family-name:var(--font-great-vibes)] text-4xl leading-tight"
+                        style={{ color: accent }}>
+                    {card.bride}
+                  </span>
+                  <span className="font-[family-name:var(--font-playfair)] text-xl select-none"
+                        style={{ color: accent, opacity: 0.45 }}>
+                    &amp;
+                  </span>
+                  <span className="font-[family-name:var(--font-great-vibes)] text-4xl leading-tight"
+                        style={{ color: accent }}>
+                    {card.groom}
+                  </span>
+                </motion.div>
+
+                {/* Bottom ornamental rule */}
+                <div className="flex items-center gap-3 mt-4">
+                  <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, transparent, ${accent}30)` }} />
+                  <motion.span
+                    className="text-[11px] font-[family-name:var(--font-cormorant)] italic tracking-wider"
+                    style={{ color: accent, opacity: 0.45 }}
+                    animate={{ opacity: [0.30, 0.60, 0.30] }}
+                    transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    ✦ forever &amp; always ✦
+                  </motion.span>
+                  <div className="flex-1 h-px" style={{ background: `linear-gradient(to left, transparent, ${accent}30)` }} />
+                </div>
+              </motion.div>
 
               {/* ── PERAHERA STRIP at bottom ── */}
               <motion.div
-                className="w-full mt-4"
+                className="w-full mt-8"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.1 }}>
@@ -601,18 +1121,18 @@ function InviteContent() {
                 <img
                   src="/images/perahara.svg"
                   alt="Kandyan perahera procession"
-                  className="w-full object-contain"
+                  className="w-3/4 mx-auto object-contain block"
                 />
               </motion.div>
 
               {/* Bottom corner foliage */}
               <div className="relative h-16 overflow-hidden">
                 <CornerFoliage color={accent}
-                  className="absolute bottom-0 left-0 w-20 h-20 opacity-55"
-                  style={{ transform: "scaleY(-1)" } as React.CSSProperties} />
+                  className="absolute bottom-0 w-32 h-40 opacity-55"
+                  style={{ left: "-10%", transform: "scaleY(-1)" } as React.CSSProperties} />
                 <CornerFoliage color={accent}
-                  className="absolute bottom-0 right-0 w-20 h-20 opacity-55"
-                  style={{ transform: "scale(-1,-1)" } as React.CSSProperties} />
+                  className="absolute bottom-0 w-32 h-40 opacity-55"
+                  style={{ right: "-10%", transform: "scale(-1,-1)" } as React.CSSProperties} />
                 <p className="absolute bottom-3 left-0 right-0 text-center text-[9px] tracking-[0.3em] uppercase select-none"
                    style={{ color: `${accent}40` }}>
                   ✦ forever &amp; always ✦

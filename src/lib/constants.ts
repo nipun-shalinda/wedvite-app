@@ -2,10 +2,17 @@ export const HARDCODED_CARD = {
   groom: "Gayanath",
   bride: "Gayasha",
   date: "2026-12-10",
-  time: "9:00 AM",
-  poruwaTime: "10:10 AM",
+  time: "9.00 AM",
+  endTime: "4.00 PM",
+  poruwaTime: "9.12 AM",
   venue: "Amaya Grand, 11/9 Malvilawatte, Giriulla,",
+  venueName: "GLAMOUR BALLROOM (2ND FLOOR)",
+  venueAddress: "AMAYA GRAND HOTEL\n11/9 Malvilawatte, Giriulla",
   mapLink: "https://maps.app.goo.gl/ierSPVgk8Lu7j7436",
+  groomFather: "Mr. Udaya Wijayasiri",
+  groomMother: "Mrs. Sumana Subasingha",
+  brideFather: "Mr. Sanath Kusumachandra",
+  brideMother: "Mrs. Wajira Thennakoon",
 } as const;
 
 export const DEFAULT_THEME = {
