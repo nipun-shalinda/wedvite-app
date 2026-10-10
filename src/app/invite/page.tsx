@@ -10,6 +10,7 @@ import {
   CornerFoliage,
   LotusDivider,
 } from "@/components/KandyanDecorations";
+import { FlowerRain } from "@/components/FlowerRain";
 
 /* ─── Palette ─────────────────────────────────────────────────────────────
    The card uses the user-chosen primaryColor / accentColor, but the
@@ -372,35 +373,17 @@ function InviteContent() {
             OPEN STATE — Full Kandyan invitation card
         ══════════════════════════════════════════════════════════════════ */}
         {isOpen && (
-          <motion.div
+          <>
+            {/* Flower Rain Effect - Continuous for 30 seconds */}
+            <FlowerRain duration={30} count={30} color={accent} />
+            
+            <motion.div
             key="card"
             className="w-full max-w-sm relative z-10"
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
             animate={{ opacity: 1, y: 0,  scale: 1 }}
             transition={{ duration: 0.55, ease: "easeOut" }}
           >
-            {/* Confetti */}
-            <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
-              {Array.from({ length: 28 }).map((_, i) => {
-                const shapes = ["🪷","🌸","✨","🌺","⭐","🌷","💛"];
-                return (
-                  <motion.span key={i}
-                    className="absolute text-base select-none"
-                    style={{ left: `${(i * 13) % 95}%`, top: "-5%" }}
-                    animate={{
-                      y: ["0vh", `${75 + (i % 5) * 5}vh`],
-                      x: [0, ((i % 3) - 1) * 60],
-                      rotate: [0, (i % 2 === 0 ? 1 : -1) * 270],
-                      opacity: [1, 0],
-                    }}
-                    transition={{ duration: 2.2 + (i % 4) * 0.4, delay: (i % 6) * 0.12, ease: "easeOut" }}
-                  >
-                    {shapes[i % shapes.length]}
-                  </motion.span>
-                );
-              })}
-            </div>
-
             {/* ── Card shell ── */}
             <div className="rounded-2xl overflow-hidden relative"
                  style={{
@@ -1140,6 +1123,7 @@ function InviteContent() {
               </div>
             </div>
           </motion.div>
+          </>
         )}
 
       </AnimatePresence>
