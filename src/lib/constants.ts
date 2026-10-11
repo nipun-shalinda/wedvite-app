@@ -4,7 +4,7 @@ export const HARDCODED_CARD = {
   date: "2026-12-10",
   time: "9.00 AM",
   endTime: "4.00 PM",
-  poruwaTime: "9.12 AM",
+  poruwaTime: "9.05 AM",
   venue: "Amaya Grand, 11/9 Malvilawatte, Giriulla,",
   venueName: "GLAMOUR BALLROOM (2ND FLOOR)",
   venueAddress: "AMAYA GRAND HOTEL\n11/9 Malvilawatte, Giriulla",
