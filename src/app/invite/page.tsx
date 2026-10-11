@@ -969,14 +969,14 @@ function InviteContent() {
                         Will You Join Us?
                       </p>
 
-                      {/* Description */}
-<p className="font-[family-name:var(--font-cormorant)] text-[15px] leading-relaxed mb-1"
-                          style={{ color: accent, opacity: 0.60 }}>
+{/* Description */}
+                      <p className="font-[family-name:var(--font-cormorant)] text-[17px] leading-relaxed mb-1"
+                          style={{ color: ACCENT_DARK, opacity: 0.85, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                          We would be absolutely thrilled to celebrate with you.
                        </p>
-                       <p className="font-[family-name:var(--font-cormorant)] text-[14px] italic mb-6"
-                          style={{ color: accent, opacity: 0.45 }}>
-                         Kindly respond by 22.11.2026
+                       <p className="font-[family-name:var(--font-cormorant)] text-[16px] italic mb-6"
+                          style={{ color: ACCENT_DARK, opacity: 0.75, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
+                         Kindly respond by <span className="font-[family-name:var(--font-playfair)] font-bold" style={{ color: accent }}>22.11.2026</span>
                        </p>
 
                       {!showRsvp ? (
