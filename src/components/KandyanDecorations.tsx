@@ -43,31 +43,128 @@ export function CornerFoliage({ color: _color, className = "", style }: Props) {
 /* ─────────────────────────────────────────────
    3. LOTUS DIVIDER  (horizontal section break)
 ───────────────────────────────────────────── */
-export function LotusDivider({ color, className = "", style }: Props) {
+import { motion } from "framer-motion";
+
+interface LotusDividerProps extends Props {
+  icon?: string;
+}
+
+export function LotusDivider({ color, className = "", style, icon }: LotusDividerProps) {
   return (
-    <svg viewBox="0 0 260 30" className={className} style={style} fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* Left line */}
-      <line x1="0"   y1="15" x2="108" y2="15" stroke={color} strokeWidth="0.8" opacity="0.30"/>
-      {/* Right line */}
-      <line x1="152" y1="15" x2="260" y2="15" stroke={color} strokeWidth="0.8" opacity="0.30"/>
+    <motion.div
+      className={className}
+      style={style}
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+    >
+      <svg viewBox="0 0 260 40" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: "100%", height: "auto" }}>
+        {/* Left line */}
+        <motion.line
+          x1="0" y1="20" x2="100" y2="20"
+          stroke={color} strokeWidth="1" opacity="0.35"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: "easeInOut" }}
+        />
+        {/* Right line */}
+        <motion.line
+          x1="160" y1="20" x2="260" y2="20"
+          stroke={color} strokeWidth="1" opacity="0.35"
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: "easeInOut" }}
+        />
 
-      {/* Lotus centre */}
-      {/* Outer petals */}
-      <ellipse cx="130" cy="15" rx="5" ry="11" fill={color} opacity="0.35" />
-      <ellipse cx="130" cy="15" rx="5" ry="11" fill={color} opacity="0.35" transform="rotate(45 130 15)"/>
-      <ellipse cx="130" cy="15" rx="5" ry="11" fill={color} opacity="0.35" transform="rotate(-45 130 15)"/>
-      <ellipse cx="130" cy="15" rx="5" ry="11" fill={color} opacity="0.35" transform="rotate(90 130 15)"/>
-      {/* Inner petals */}
-      <ellipse cx="130" cy="15" rx="3" ry="7" fill={color} opacity="0.50" />
-      <ellipse cx="130" cy="15" rx="3" ry="7" fill={color} opacity="0.50" transform="rotate(60 130 15)"/>
-      <ellipse cx="130" cy="15" rx="3" ry="7" fill={color} opacity="0.50" transform="rotate(-60 130 15)"/>
-      {/* Centre dot */}
-      <circle cx="130" cy="15" r="2.5" fill={color} opacity="0.65"/>
+        {/* Center icon */}
+        {icon && (
+          <motion.text
+            x="130" y="22"
+            textAnchor="middle"
+            fontSize="18"
+            fill={color}
+            opacity="0.85"
+            initial={{ opacity: 0, scale: 0.5, rotate: -90 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.5 }}
+            style={{ filter: `drop-shadow(0 2px 4px ${color}40)` }}
+          >
+            {icon}
+          </motion.text>
+        )}
 
-      {/* Small dot accents flanking */}
-      <circle cx="115" cy="15" r="1.5" fill={color} opacity="0.35"/>
-      <circle cx="145" cy="15" r="1.5" fill={color} opacity="0.35"/>
-    </svg>
+        {/* Lotus centre (fallback when no icon) */}
+        {!icon && (
+          <>
+            {/* Outer petals */}
+            <motion.ellipse
+              cx="130" cy="20" rx="5" ry="11" fill={color} opacity="0.35"
+              initial={{ scale: 0 }} animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.4 }}
+            />
+            <motion.ellipse
+              cx="130" cy="20" rx="5" ry="11" fill={color} opacity="0.35" transform="rotate(45 130 20)"
+              initial={{ scale: 0 }} animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.45 }}
+            />
+            <motion.ellipse
+              cx="130" cy="20" rx="5" ry="11" fill={color} opacity="0.35" transform="rotate(-45 130 20)"
+              initial={{ scale: 0 }} animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.5 }}
+            />
+            <motion.ellipse
+              cx="130" cy="20" rx="5" ry="11" fill={color} opacity="0.35" transform="rotate(90 130 20)"
+              initial={{ scale: 0 }} animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.55 }}
+            />
+            {/* Inner petals */}
+            <motion.ellipse
+              cx="130" cy="20" rx="3" ry="7" fill={color} opacity="0.50"
+              initial={{ scale: 0 }} animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.5 }}
+            />
+            <motion.ellipse
+              cx="130" cy="20" rx="3" ry="7" fill={color} opacity="0.50" transform="rotate(60 130 20)"
+              initial={{ scale: 0 }} animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.55 }}
+            />
+            <motion.ellipse
+              cx="130" cy="20" rx="3" ry="7" fill={color} opacity="0.50" transform="rotate(-60 130 20)"
+              initial={{ scale: 0 }} animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.6 }}
+            />
+            {/* Centre dot */}
+            <motion.circle
+              cx="130" cy="20" r="2.5" fill={color} opacity="0.65"
+              initial={{ scale: 0 }} animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.6 }}
+            />
+            {/* Small dot accents flanking */}
+            <motion.circle
+              cx="115" cy="20" r="1.5" fill={color} opacity="0.35"
+              initial={{ scale: 0 }} animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.65 }}
+            />
+            <motion.circle
+              cx="145" cy="20" r="1.5" fill={color} opacity="0.35"
+              initial={{ scale: 0 }} animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.7 }}
+            />
+          </>
+        )}
+
+        {/* Subtle shimmer line */}
+        <motion.line
+          x1="90" y1="20" x2="170" y2="20"
+          stroke={color} strokeWidth="0.5" opacity="0.2"
+          strokeDasharray="4,4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 0.3, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        />
+      </svg>
+    </motion.div>
   );
 }
 
