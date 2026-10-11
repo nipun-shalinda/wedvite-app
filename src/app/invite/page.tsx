@@ -548,18 +548,10 @@ function InviteContent() {
                        textShadow: `0 3px 6px rgba(255,255,255,0.9), 0 1px 3px rgba(122,92,10,0.3)`,
                        filter: `drop-shadow(0 2px 4px rgba(122,92,10,0.2))`
                      }}>
-                       {inviteeName}
-                     </p>
+{inviteeName}
+                      </p>
 
-                  {/* Thin rule */}
-                  <div className="flex items-center gap-3 my-3">
-                    <div className="flex-1 h-px" style={{ backgroundColor: `${accent}30` }} />
-                    <span className="text-sm tracking-[0.25em] uppercase font-medium"
-                          style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>cordially invited</span>
-                    <div className="flex-1 h-px" style={{ backgroundColor: `${accent}30` }} />
-                  </div>
-
-                  <p className="font-[family-name:var(--font-cormorant)] text-base leading-relaxed mb-6 font-medium"
+                   <p className="font-[family-name:var(--font-cormorant)] text-base leading-relaxed mb-6 font-medium"
                      style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                     You are cordially invited to celebrate<br />the joyous union of
                   </p>
