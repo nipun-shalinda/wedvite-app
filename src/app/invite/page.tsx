@@ -161,20 +161,32 @@ function InviteContent() {
             {/* ── Above-card header ── */}
             <div className="flex flex-col items-center gap-1 w-full text-center">
               <div
-                className="px-5 py-1 rounded-full border text-[10px] tracking-[0.35em] uppercase"
-                style={{ borderColor: `${accent}50`, color: `${accent}90` }}
+                className="px-6 py-2 rounded-full border-2 text-xs font-bold tracking-[0.35em] uppercase shadow-lg"
+                style={{ 
+                  borderColor: accent, 
+                  color: accent,
+                  backgroundColor: `${PARCHMENT}dd`,
+                  boxShadow: `0 4px 12px ${accent}30`
+                }}
               >
                 Save the Date
               </div>
               <p
-                className="font-[family-name:var(--font-great-vibes)] text-4xl leading-snug mt-1"
-                style={{ color: accent }}
+                className="font-[family-name:var(--font-great-vibes)] text-5xl leading-snug mt-2 font-bold"
+                style={{ 
+                  color: accent,
+                  textShadow: `0 2px 8px ${accent}30`,
+                  filter: `drop-shadow(0 1px 2px ${accent}20)`
+                }}
               >
                 {card.groom} &amp; {card.bride}
               </p>
               <p
-                className="text-[11px] tracking-widest uppercase"
-                style={{ color: `${accent}80` }}
+                className="text-sm font-bold tracking-widest uppercase"
+                style={{ 
+                  color: accent,
+                  textShadow: `0 1px 4px ${accent}25`
+                }}
               >
                 {new Date(card.date + "T00:00:00").toLocaleDateString("en-US", {
                   month: "long", day: "2-digit", year: "numeric",
@@ -210,8 +222,15 @@ function InviteContent() {
                   }}
                   animate={isOpen
                     ? { rotateY: -105, opacity: 0 }
-                    : { rotateY: 0,    opacity: 1 }}
-                  transition={{ duration: 0.75, ease: [0.4, 0, 0.2, 1] }}
+                    : { rotateY: [0, -15, 0], opacity: 1 }}
+                  transition={isOpen 
+                    ? { duration: 0.75, ease: [0.4, 0, 0.2, 1] }
+                    : { 
+                        duration: 3, 
+                        ease: "easeInOut",
+                        repeat: Infinity,
+                        repeatDelay: 0.5
+                      }}
                 >
                   {/* Corner foliage TL */}
                   <CornerFoliage color={accent}
@@ -249,8 +268,15 @@ function InviteContent() {
                   }}
                   animate={isOpen
                     ? { rotateY: 105, opacity: 0 }
-                    : { rotateY: 0,   opacity: 1 }}
-                  transition={{ duration: 0.75, ease: [0.4, 0, 0.2, 1] }}
+                    : { rotateY: [0, 15, 0], opacity: 1 }}
+                  transition={isOpen
+                    ? { duration: 0.75, ease: [0.4, 0, 0.2, 1] }
+                    : { 
+                        duration: 3, 
+                        ease: "easeInOut",
+                        repeat: Infinity,
+                        repeatDelay: 0.5
+                      }}
                 >
                   {/* Corner foliage TR */}
                   <CornerFoliage color={accent}
@@ -289,34 +315,42 @@ function InviteContent() {
                      style={{ left: "50%", top: "68%", transform: "translate(-50%, -50%)" }}>
                   <motion.div
                     className="flex flex-col items-center justify-center"
-                    whileHover={{ scale: 1.10 }}
+                    whileHover={{ scale: 1.15 }}
                     whileTap={{ scale: 0.92 }}
                     animate={isOpen
                       ? { scale: 0, opacity: 0 }
-                      : { scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.30 }}
+                      : { scale: [1, 1.08, 1], opacity: 1 }}
+                    transition={isOpen
+                      ? { duration: 0.30 }
+                      : { 
+                          scale: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
+                          opacity: { duration: 0.30 }
+                        }}
                   >
                     {/* Pulse ring */}
                     <motion.div className="absolute rounded-full"
-                      style={{ width: 90, height: 90, border: `1px solid ${accent}35` }}
-                      animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.65, 0.3] }}
+                      style={{ width: 95, height: 95, border: `2px solid ${accent}60` }}
+                      animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.85, 0.5] }}
                       transition={{ duration: 2.8, repeat: Infinity }} />
                     {/* Seal body */}
                     <div className="relative flex flex-col items-center justify-center rounded-full"
                          style={{
-                           width: 72, height: 72,
+                           width: 78, height: 78,
                            background: `radial-gradient(circle, ${PARCHMENT} 60%, ${PARCHMENT_DARK} 100%)`,
-                           border: `2px solid ${accent}55`,
-                           boxShadow: `0 2px 12px rgba(100,70,20,0.25), inset 0 1px 3px rgba(255,255,255,0.8)`,
+                           border: `3px solid ${accent}`,
+                           boxShadow: `0 4px 16px ${accent}40, inset 0 2px 4px rgba(255,255,255,0.9)`,
                          }}>
                       <div className="absolute rounded-full"
-                           style={{ inset: 5, border: `1px dashed ${accent}35`, borderRadius: "50%" }} />
-                      <p className="font-[family-name:var(--font-great-vibes)] text-xl leading-none z-10"
-                         style={{ color: accent }}>
+                           style={{ inset: 6, border: `1.5px dashed ${accent}50`, borderRadius: "50%" }} />
+                      <p className="font-[family-name:var(--font-great-vibes)] text-2xl font-bold leading-none z-10"
+                         style={{ 
+                           color: accent,
+                           textShadow: `0 1px 3px ${accent}30`
+                         }}>
                         {card.groom.charAt(0)}&amp;{card.bride.charAt(0)}
                       </p>
-                      <p className="text-[7px] tracking-[0.22em] uppercase mt-0.5 z-10"
-                         style={{ color: `${accent}75` }}>
+                      <p className="text-[8px] font-bold tracking-[0.25em] uppercase mt-1 z-10"
+                         style={{ color: accent }}>
                         Open
                       </p>
                     </div>
@@ -330,15 +364,16 @@ function InviteContent() {
 
                 {/* ── "TAP SEAL TO OPEN" footer ── */}
                 <motion.div
-                  className="absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-3"
-                  animate={{ opacity: [0.45, 0.85, 0.45] }}
+                  className="absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-4"
+                  animate={{ opacity: [0.65, 1, 0.65] }}
                   transition={{ duration: 2.2, repeat: Infinity }}
                 >
-                  <div className="px-5 py-1 rounded-full border text-[9px] tracking-[0.22em] uppercase"
+                  <div className="px-6 py-2 rounded-full border-2 text-[10px] font-bold tracking-[0.25em] uppercase shadow-lg"
                        style={{
-                         borderColor: `${accent}30`,
-                         color: `${accent}65`,
-                         backgroundColor: `${PARCHMENT}cc`,
+                         borderColor: accent,
+                         color: accent,
+                         backgroundColor: `${PARCHMENT}ee`,
+                         boxShadow: `0 2px 10px ${accent}35`
                        }}>
                     Tap Seal to Open
                   </div>
@@ -356,16 +391,6 @@ function InviteContent() {
                 />
               </motion.div>
             </div>
-
-            {/* ── Below-card label ── */}
-            <motion.p
-              className="text-[10px] tracking-[0.35em] uppercase"
-              style={{ color: `${accent}60` }}
-              animate={{ opacity: [0.4, 0.85, 0.4] }}
-              transition={{ duration: 2.2, repeat: Infinity }}
-            >
-              Tap to Reveal
-            </motion.p>
           </motion.div>
         )}
 
