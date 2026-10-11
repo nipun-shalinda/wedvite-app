@@ -10,6 +10,7 @@ import {
   CornerFoliage,
   LotusDivider,
 } from "@/components/KandyanDecorations";
+import { FlowerRain } from "@/components/FlowerRain";
 
 /* ─── Palette ─────────────────────────────────────────────────────────────
    The card uses the user-chosen primaryColor / accentColor, but the
@@ -19,6 +20,7 @@ import {
 ──────────────────────────────────────────────────────────────────────────── */
 const PARCHMENT = "#f5efe0";   // warm cream
 const PARCHMENT_DARK = "#ede4d0";
+const ACCENT_DARK = "#7a5c0a"; // darker gold for better readability
 
 export default function InvitePage() {
   return (
@@ -160,20 +162,32 @@ function InviteContent() {
             {/* ── Above-card header ── */}
             <div className="flex flex-col items-center gap-1 w-full text-center">
               <div
-                className="px-5 py-1 rounded-full border text-[10px] tracking-[0.35em] uppercase"
-                style={{ borderColor: `${accent}50`, color: `${accent}90` }}
+                className="px-6 py-2 rounded-full border-2 text-xs font-bold tracking-[0.35em] uppercase shadow-lg"
+                style={{ 
+                  borderColor: ACCENT_DARK, 
+                  color: ACCENT_DARK,
+                  backgroundColor: `${PARCHMENT}dd`,
+                  boxShadow: `0 4px 12px ${accent}30`
+                }}
               >
                 Save the Date
               </div>
               <p
-                className="font-[family-name:var(--font-great-vibes)] text-4xl leading-snug mt-1"
-                style={{ color: accent }}
+                className="font-[family-name:var(--font-great-vibes)] text-5xl leading-snug mt-2 font-bold"
+                style={{ 
+                  color: ACCENT_DARK,
+                  textShadow: `0 2px 8px ${accent}30`,
+                  filter: `drop-shadow(0 1px 2px ${accent}20)`
+                }}
               >
                 {card.groom} &amp; {card.bride}
               </p>
               <p
-                className="text-[11px] tracking-widest uppercase"
-                style={{ color: `${accent}80` }}
+                className="text-sm font-bold tracking-widest uppercase"
+                style={{ 
+                  color: ACCENT_DARK,
+                  textShadow: `0 1px 4px ${accent}25`
+                }}
               >
                 {new Date(card.date + "T00:00:00").toLocaleDateString("en-US", {
                   month: "long", day: "2-digit", year: "numeric",
@@ -209,8 +223,15 @@ function InviteContent() {
                   }}
                   animate={isOpen
                     ? { rotateY: -105, opacity: 0 }
-                    : { rotateY: 0,    opacity: 1 }}
-                  transition={{ duration: 0.75, ease: [0.4, 0, 0.2, 1] }}
+                    : { rotateY: [0, -15, 0], opacity: 1 }}
+                  transition={isOpen 
+                    ? { duration: 0.75, ease: [0.4, 0, 0.2, 1] }
+                    : { 
+                        duration: 3, 
+                        ease: "easeInOut",
+                        repeat: Infinity,
+                        repeatDelay: 0.5
+                      }}
                 >
                   {/* Corner foliage TL */}
                   <CornerFoliage color={accent}
@@ -248,8 +269,15 @@ function InviteContent() {
                   }}
                   animate={isOpen
                     ? { rotateY: 105, opacity: 0 }
-                    : { rotateY: 0,   opacity: 1 }}
-                  transition={{ duration: 0.75, ease: [0.4, 0, 0.2, 1] }}
+                    : { rotateY: [0, 15, 0], opacity: 1 }}
+                  transition={isOpen
+                    ? { duration: 0.75, ease: [0.4, 0, 0.2, 1] }
+                    : { 
+                        duration: 3, 
+                        ease: "easeInOut",
+                        repeat: Infinity,
+                        repeatDelay: 0.5
+                      }}
                 >
                   {/* Corner foliage TR */}
                   <CornerFoliage color={accent}
@@ -288,34 +316,42 @@ function InviteContent() {
                      style={{ left: "50%", top: "68%", transform: "translate(-50%, -50%)" }}>
                   <motion.div
                     className="flex flex-col items-center justify-center"
-                    whileHover={{ scale: 1.10 }}
+                    whileHover={{ scale: 1.15 }}
                     whileTap={{ scale: 0.92 }}
                     animate={isOpen
                       ? { scale: 0, opacity: 0 }
-                      : { scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.30 }}
+                      : { scale: [1, 1.08, 1], opacity: 1 }}
+                    transition={isOpen
+                      ? { duration: 0.30 }
+                      : { 
+                          scale: { duration: 2.5, repeat: Infinity, ease: "easeInOut" },
+                          opacity: { duration: 0.30 }
+                        }}
                   >
                     {/* Pulse ring */}
                     <motion.div className="absolute rounded-full"
-                      style={{ width: 90, height: 90, border: `1px solid ${accent}35` }}
-                      animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.65, 0.3] }}
+                      style={{ width: 95, height: 95, border: `2px solid ${accent}60` }}
+                      animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0.85, 0.5] }}
                       transition={{ duration: 2.8, repeat: Infinity }} />
                     {/* Seal body */}
                     <div className="relative flex flex-col items-center justify-center rounded-full"
                          style={{
-                           width: 72, height: 72,
+                           width: 78, height: 78,
                            background: `radial-gradient(circle, ${PARCHMENT} 60%, ${PARCHMENT_DARK} 100%)`,
-                           border: `2px solid ${accent}55`,
-                           boxShadow: `0 2px 12px rgba(100,70,20,0.25), inset 0 1px 3px rgba(255,255,255,0.8)`,
+                           border: `3px solid ${accent}`,
+                           boxShadow: `0 4px 16px ${accent}40, inset 0 2px 4px rgba(255,255,255,0.9)`,
                          }}>
                       <div className="absolute rounded-full"
-                           style={{ inset: 5, border: `1px dashed ${accent}35`, borderRadius: "50%" }} />
-                      <p className="font-[family-name:var(--font-great-vibes)] text-xl leading-none z-10"
-                         style={{ color: accent }}>
+                           style={{ inset: 6, border: `1.5px dashed ${accent}50`, borderRadius: "50%" }} />
+                      <p className="font-[family-name:var(--font-great-vibes)] text-2xl font-bold leading-none z-10"
+                         style={{ 
+                           color: accent,
+                           textShadow: `0 1px 3px ${accent}30`
+                         }}>
                         {card.groom.charAt(0)}&amp;{card.bride.charAt(0)}
                       </p>
-                      <p className="text-[7px] tracking-[0.22em] uppercase mt-0.5 z-10"
-                         style={{ color: `${accent}75` }}>
+                      <p className="text-[8px] font-bold tracking-[0.25em] uppercase mt-1 z-10"
+                         style={{ color: accent }}>
                         Open
                       </p>
                     </div>
@@ -324,20 +360,21 @@ function InviteContent() {
 
                 {/* ── LOTUS DIVIDER above bottom text ── */}
                 <div className="absolute z-10 left-4 right-4" style={{ bottom: "14%" }}>
-                  <LotusDivider color={accent} className="w-full opacity-45" />
+                  <LotusDivider color={accent} className="w-full opacity-45" icon="💍" />
                 </div>
 
                 {/* ── "TAP SEAL TO OPEN" footer ── */}
                 <motion.div
-                  className="absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-3"
-                  animate={{ opacity: [0.45, 0.85, 0.45] }}
+                  className="absolute bottom-0 left-0 right-0 z-10 flex justify-center pb-4"
+                  animate={{ opacity: [0.65, 1, 0.65] }}
                   transition={{ duration: 2.2, repeat: Infinity }}
                 >
-                  <div className="px-5 py-1 rounded-full border text-[9px] tracking-[0.22em] uppercase"
+                  <div className="px-6 py-2 rounded-full border-2 text-[10px] font-bold tracking-[0.25em] uppercase shadow-lg"
                        style={{
-                         borderColor: `${accent}30`,
-                         color: `${accent}65`,
-                         backgroundColor: `${PARCHMENT}cc`,
+                         borderColor: accent,
+                         color: accent,
+                         backgroundColor: `${PARCHMENT}ee`,
+                         boxShadow: `0 2px 10px ${accent}35`
                        }}>
                     Tap Seal to Open
                   </div>
@@ -355,16 +392,6 @@ function InviteContent() {
                 />
               </motion.div>
             </div>
-
-            {/* ── Below-card label ── */}
-            <motion.p
-              className="text-[10px] tracking-[0.35em] uppercase"
-              style={{ color: `${accent}60` }}
-              animate={{ opacity: [0.4, 0.85, 0.4] }}
-              transition={{ duration: 2.2, repeat: Infinity }}
-            >
-              Tap to Reveal
-            </motion.p>
           </motion.div>
         )}
 
@@ -372,35 +399,17 @@ function InviteContent() {
             OPEN STATE — Full Kandyan invitation card
         ══════════════════════════════════════════════════════════════════ */}
         {isOpen && (
-          <motion.div
+          <>
+            {/* Flower Rain Effect - Continuous for 30 seconds */}
+            <FlowerRain duration={30} count={30} color={accent} />
+            
+            <motion.div
             key="card"
             className="w-full max-w-sm relative z-10"
             initial={{ opacity: 0, y: 40, scale: 0.95 }}
             animate={{ opacity: 1, y: 0,  scale: 1 }}
             transition={{ duration: 0.55, ease: "easeOut" }}
           >
-            {/* Confetti */}
-            <div className="fixed inset-0 pointer-events-none overflow-hidden z-50">
-              {Array.from({ length: 28 }).map((_, i) => {
-                const shapes = ["🪷","🌸","✨","🌺","⭐","🌷","💛"];
-                return (
-                  <motion.span key={i}
-                    className="absolute text-base select-none"
-                    style={{ left: `${(i * 13) % 95}%`, top: "-5%" }}
-                    animate={{
-                      y: ["0vh", `${75 + (i % 5) * 5}vh`],
-                      x: [0, ((i % 3) - 1) * 60],
-                      rotate: [0, (i % 2 === 0 ? 1 : -1) * 270],
-                      opacity: [1, 0],
-                    }}
-                    transition={{ duration: 2.2 + (i % 4) * 0.4, delay: (i % 6) * 0.12, ease: "easeOut" }}
-                  >
-                    {shapes[i % shapes.length]}
-                  </motion.span>
-                );
-              })}
-            </div>
-
             {/* ── Card shell ── */}
             <div className="rounded-2xl overflow-hidden relative"
                  style={{
@@ -461,7 +470,7 @@ function InviteContent() {
 
                 {/* Section divider */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-                  <LotusDivider color={accent} className="w-full opacity-50" />
+                  <LotusDivider color={accent} className="w-full opacity-50" icon="💐" />
                 </motion.div>
 
                 {/* ══════════════════════════════════════════════
@@ -474,42 +483,42 @@ function InviteContent() {
                   transition={{ delay: 0.35 }}
                 >
                   {/* WITH JOY IN OUR HEARTS */}
-                  <p className="text-[9px] tracking-[0.35em] uppercase mb-1"
-                     style={{ color: accent, opacity: 0.55 }}>
+                  <p className="text-xs tracking-[0.3em] uppercase mb-1 font-medium"
+                     style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                     With Joy in Our Hearts
                   </p>
 
                   {/* You&apos;re Invited! */}
-                  <p className="font-[family-name:var(--font-playfair)] text-2xl font-semibold mb-1"
-                     style={{ color: accent }}>
+                  <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold mb-1"
+                     style={{ color: ACCENT_DARK, textShadow: `0 2px 4px rgba(255,255,255,0.9)` }}>
                     You&apos;re Invited!
                   </p>
 
                   {/* the wedding of */}
-                  <p className="text-[9px] tracking-widest uppercase mb-3"
-                     style={{ color: accent, opacity: 0.45 }}>
+                  <p className="text-xs tracking-wider uppercase mb-3 font-medium"
+                     style={{ color: ACCENT_DARK, opacity: 0.85, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                     the wedding of
                   </p>
 
                   {/* Groom name */}
                   <motion.h1
-                    className="font-[family-name:var(--font-great-vibes)] text-5xl sm:text-6xl mb-0 leading-tight"
-                    style={{ color: accent }}
+                    className="font-[family-name:var(--font-great-vibes)] text-6xl sm:text-7xl mb-0 leading-tight font-bold"
+                    style={{ color: ACCENT_DARK, textShadow: `0 3px 6px rgba(255,255,255,0.9), 0 1px 3px rgba(122,92,10,0.3)` }}
                     initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.45, type: "spring" }}>
                     {card.groom}
                   </motion.h1>
 
-                  {/* & */}
-                  <p className="text-base tracking-[0.25em] my-1 select-none font-[family-name:var(--font-playfair)]"
-                     style={{ color: accent, opacity: 0.50 }}>
-                    &amp;
+{/* & */}
+                  <p className="text-lg tracking-[0.2em] my-1 select-none font-[family-name:var(--font-playfair)] font-semibold"
+                     style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.9)` }}>
+                    &
                   </p>
 
                   {/* Bride name */}
                   <motion.h1
-                    className="font-[family-name:var(--font-great-vibes)] text-5xl sm:text-6xl mb-4 leading-tight"
-                    style={{ color: accent }}
+                    className="font-[family-name:var(--font-great-vibes)] text-6xl sm:text-7xl mb-4 leading-tight font-bold"
+                    style={{ color: ACCENT_DARK, textShadow: `0 3px 6px rgba(255,255,255,0.9), 0 1px 3px rgba(122,92,10,0.3)` }}
                     initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.52, type: "spring" }}>
                     {card.bride}
@@ -520,7 +529,7 @@ function InviteContent() {
 
                 {/* Lotus divider 2 */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65 }}>
-                  <LotusDivider color={accent} className="w-full opacity-45" />
+                  <LotusDivider color={accent} className="w-full opacity-45" icon="🕊️" />
                 </motion.div>
 
                 {/* ══════════════════════════════════════════════
@@ -532,22 +541,26 @@ function InviteContent() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.68 }}
                 >
-                  {/* Invitee name */}
-                  <p className="font-[family-name:var(--font-great-vibes)] text-4xl leading-snug mb-1"
-                     style={{ color: accent }}>
-                    {inviteeName}
-                  </p>
+{/* Invitee name */}
+                  <p className="font-[family-name:var(--font-cormorant)] text-3xl leading-snug mb-1 font-bold"
+                     style={{ 
+                       color: ACCENT_DARK, 
+                       textShadow: `0 3px 6px rgba(255,255,255,0.9), 0 1px 3px rgba(122,92,10,0.3)`,
+                       filter: `drop-shadow(0 2px 4px rgba(122,92,10,0.2))`
+                     }}>
+                       {inviteeName}
+                     </p>
 
                   {/* Thin rule */}
                   <div className="flex items-center gap-3 my-3">
                     <div className="flex-1 h-px" style={{ backgroundColor: `${accent}30` }} />
-                    <span className="text-[10px] tracking-[0.3em] uppercase"
-                          style={{ color: accent, opacity: 0.45 }}>cordially invited</span>
+                    <span className="text-sm tracking-[0.25em] uppercase font-medium"
+                          style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>cordially invited</span>
                     <div className="flex-1 h-px" style={{ backgroundColor: `${accent}30` }} />
                   </div>
 
-                  <p className="font-[family-name:var(--font-cormorant)] text-[13px] leading-relaxed mb-6"
-                     style={{ color: accent, opacity: 0.60 }}>
+                  <p className="font-[family-name:var(--font-cormorant)] text-base leading-relaxed mb-6 font-medium"
+                     style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                     You are cordially invited to celebrate<br />the joyous union of
                   </p>
 
@@ -564,23 +577,23 @@ function InviteContent() {
                     <span className="absolute bottom-2 left-2 text-[8px] select-none" style={{ color: `${accent}40` }}>◆</span>
                     <span className="absolute bottom-2 right-2 text-[8px] select-none" style={{ color: `${accent}40` }}>◆</span>
 
-                    <p className="text-[9px] tracking-[0.3em] uppercase mb-2"
-                       style={{ color: accent, opacity: 0.40 }}>
+                    <p className="text-sm tracking-[0.25em] uppercase mb-2 font-semibold"
+                       style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                       Bride
                     </p>
-                    <p className="font-[family-name:var(--font-great-vibes)] text-4xl leading-tight"
-                       style={{ color: accent }}>
+                    <p className="font-[family-name:var(--font-great-vibes)] text-5xl leading-tight font-bold"
+                       style={{ color: ACCENT_DARK, textShadow: `0 2px 4px rgba(255,255,255,0.9)` }}>
                       {card.bride}
                     </p>
                     <div className="w-10 h-px mx-auto my-2" style={{ backgroundColor: `${accent}35` }} />
-                    <p className="font-[family-name:var(--font-cormorant)] text-[11px] italic"
-                       style={{ color: accent, opacity: 0.50 }}>
+                    <p className="font-[family-name:var(--font-cormorant)] text-sm italic font-medium"
+                       style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                       Beloved daughter of
                     </p>
-                    <p className="font-[family-name:var(--font-cormorant)] text-[13px] font-semibold leading-snug mt-1"
-                       style={{ color: accent, opacity: 0.80 }}>
+<p className="font-[family-name:var(--font-cormorant)] text-base font-semibold leading-snug mt-1"
+                       style={{ color: ACCENT_DARK, opacity: 0.95, textShadow: `0 1px 2px rgba(255,255,255,0.9)` }}>
                       {card.brideFather ?? ""}
-                      {card.brideFather && card.brideMother ? (<><br />&amp;<br /></>) : ""}
+                      {card.brideFather && card.brideMother ? (<><br />&<br /></>) : ""}
                       {card.brideMother ?? ""}
                     </p>
                   </div>
@@ -588,9 +601,9 @@ function InviteContent() {
                   {/* —— & separator —— */}
                   <div className="flex items-center justify-center gap-2 my-3">
                     <div className="w-6 h-px" style={{ backgroundColor: `${accent}25` }} />
-                    <p className="font-[family-name:var(--font-great-vibes)] text-3xl leading-none select-none"
-                       style={{ color: accent, opacity: 0.50 }}>
-                      &amp;
+<p className="font-[family-name:var(--font-great-vibes)] text-3xl leading-none select-none font-semibold"
+                       style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.9)` }}>
+                      &
                     </p>
                     <div className="w-6 h-px" style={{ backgroundColor: `${accent}25` }} />
                   </div>
@@ -608,23 +621,23 @@ function InviteContent() {
                     <span className="absolute bottom-2 left-2 text-[8px] select-none" style={{ color: `${accent}40` }}>◆</span>
                     <span className="absolute bottom-2 right-2 text-[8px] select-none" style={{ color: `${accent}40` }}>◆</span>
 
-                    <p className="text-[9px] tracking-[0.3em] uppercase mb-2"
-                       style={{ color: accent, opacity: 0.40 }}>
+                    <p className="text-sm tracking-[0.25em] uppercase mb-2 font-semibold"
+                       style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                       Groom
                     </p>
-                    <p className="font-[family-name:var(--font-great-vibes)] text-4xl leading-tight"
-                       style={{ color: accent }}>
+                    <p className="font-[family-name:var(--font-great-vibes)] text-5xl leading-tight font-bold"
+                       style={{ color: ACCENT_DARK, textShadow: `0 2px 4px rgba(255,255,255,0.9)` }}>
                       {card.groom}
                     </p>
                     <div className="w-10 h-px mx-auto my-2" style={{ backgroundColor: `${accent}35` }} />
-                    <p className="font-[family-name:var(--font-cormorant)] text-[11px] italic"
-                       style={{ color: accent, opacity: 0.50 }}>
+                    <p className="font-[family-name:var(--font-cormorant)] text-sm italic font-medium"
+                       style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                       Beloved son of
                     </p>
-                    <p className="font-[family-name:var(--font-cormorant)] text-[13px] font-semibold leading-snug mt-1"
-                       style={{ color: accent, opacity: 0.80 }}>
+<p className="font-[family-name:var(--font-cormorant)] text-base font-semibold leading-snug mt-1"
+                       style={{ color: ACCENT_DARK, opacity: 0.95, textShadow: `0 1px 2px rgba(255,255,255,0.9)` }}>
                       {card.groomFather ?? ""}
-                      {card.groomFather && card.groomMother ? (<><br />&amp;<br /></>) : ""}
+                      {card.groomFather && card.groomMother ? (<><br />&<br /></>) : ""}
                       {card.groomMother ?? ""}
                     </p>
                   </div>
@@ -632,7 +645,7 @@ function InviteContent() {
 
                 {/* Lotus divider 3 (between section 3 and date) */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.72 }}>
-                  <LotusDivider color={accent} className="w-full opacity-40 mb-4" />
+                  <LotusDivider color={accent} className="w-full opacity-40 mb-4" icon="💒" />
                 </motion.div>
 
                 {/* ══════════════════════════════════════════════
@@ -643,19 +656,19 @@ function InviteContent() {
                   initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.74 }}
                 >
-                  {/* Day label */}
-                  <p className="text-[9px] tracking-[0.35em] uppercase mb-3"
-                     style={{ color: accent, opacity: 0.45 }}>
-                    Date &amp; Time
+{/* Day label */}
+                  <p className="text-xs tracking-[0.3em] uppercase mb-3 font-medium"
+                     style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
+                    Date & Time
                   </p>
 
                   {/* Full date — large */}
-                  <p className="font-[family-name:var(--font-cormorant)] text-[11px] tracking-[0.25em] uppercase"
-                     style={{ color: accent, opacity: 0.55 }}>
+                  <p className="font-[family-name:var(--font-cormorant)] text-sm tracking-[0.2em] uppercase font-medium"
+                     style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                     {new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { weekday: "long" }).toUpperCase()}
                   </p>
-                  <p className="font-[family-name:var(--font-playfair)] text-2xl font-semibold leading-tight mt-0.5"
-                     style={{ color: accent }}>
+                  <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold leading-tight mt-0.5"
+                     style={{ color: ACCENT_DARK, textShadow: `0 2px 4px rgba(255,255,255,0.9)` }}>
                     {new Date(card.date + "T00:00:00").toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" }).toUpperCase()}
                   </p>
 
@@ -663,8 +676,8 @@ function InviteContent() {
                   <div className="w-12 h-px mx-auto my-3" style={{ backgroundColor: `${accent}35` }} />
 
                   {/* Time range */}
-                  <p className="font-[family-name:var(--font-cormorant)] text-[13px] tracking-wide"
-                     style={{ color: accent, opacity: 0.65 }}>
+                  <p className="font-[family-name:var(--font-cormorant)] text-base tracking-wide font-medium"
+                     style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                     {card.time}{card.endTime ? ` — ${card.endTime}` : " onwards"}
                   </p>
 
@@ -682,12 +695,12 @@ function InviteContent() {
                              border: `1.5px solid ${accent}55`,
                              boxShadow: `0 2px 16px ${accent}25, inset 0 1px 2px ${accent}15`,
                            }}>
-                        <p className="text-[9px] tracking-[0.35em] uppercase mb-1"
-                           style={{ color: accent, opacity: 0.60 }}>
+                        <p className="text-xs tracking-[0.3em] uppercase mb-1 font-semibold"
+                           style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                           🪷 Poruwa Ceremony
                         </p>
-                        <p className="font-[family-name:var(--font-playfair)] text-2xl font-semibold"
-                           style={{ color: accent }}>
+                        <p className="font-[family-name:var(--font-playfair)] text-3xl font-bold"
+                           style={{ color: ACCENT_DARK, textShadow: `0 2px 4px rgba(255,255,255,0.9)` }}>
                           {card.poruwaTime}
                         </p>
                       </div>
@@ -697,7 +710,7 @@ function InviteContent() {
 
                 {/* Lotus divider 3 */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.80 }}>
-                  <LotusDivider color={accent} className="w-full opacity-40 mb-3" />
+                  <LotusDivider color={accent} className="w-full opacity-40 mb-3" icon="⏳" />
                 </motion.div>
 
                 {/* ══════════════════════════════════════════════
@@ -719,16 +732,16 @@ function InviteContent() {
 
                       {/* "Wait for the magic" label */}
                       <motion.p
-                        className="font-[family-name:var(--font-great-vibes)] text-3xl leading-snug mb-1"
-                        style={{ color: accent }}
+                        className="font-[family-name:var(--font-great-vibes)] text-4xl leading-snug mb-1 font-bold"
+                        style={{ color: ACCENT_DARK, textShadow: `0 2px 4px rgba(255,255,255,0.9)` }}
                         animate={{ opacity: [0.70, 1, 0.70] }}
                         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                       >
                         Wait for the magic
                       </motion.p>
 
-                      <p className="text-[9px] tracking-[0.35em] uppercase mb-5"
-                         style={{ color: accent, opacity: 0.45 }}>
+                      <p className="text-sm tracking-[0.3em] uppercase mb-5 font-small"
+                         style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                         Counting Down To Forever
                       </p>
 
@@ -759,7 +772,7 @@ function InviteContent() {
                             <motion.span
                               key={value}
                               className="font-[family-name:var(--font-playfair)] text-2xl font-bold leading-none z-10"
-                              style={{ color: accent }}
+                              style={{ color: ACCENT_DARK, textShadow: `0 1px 2px rgba(255,255,255,0.9)` }}
                               initial={{ opacity: 0, scale: 0.7, y: -8 }}
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               transition={{ duration: 0.22, ease: "easeOut" }}
@@ -769,8 +782,8 @@ function InviteContent() {
 
                             <div className="w-6 h-px my-1.5 z-10" style={{ backgroundColor: `${accent}30` }} />
 
-                            <span className="text-[8px] tracking-[0.25em] uppercase z-10"
-                                  style={{ color: accent, opacity: 0.50 }}>
+                            <span className="text-[10px] tracking-[0.2em] uppercase z-10 font-medium"
+                                  style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                               {label}
                             </span>
                           </motion.div>
@@ -781,8 +794,8 @@ function InviteContent() {
                       <div className="flex items-center gap-3 mt-5">
                         <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, transparent, ${accent}30)` }} />
                         <motion.span
-                          className="text-[10px] font-[family-name:var(--font-cormorant)] italic tracking-wider"
-                          style={{ color: accent, opacity: 0.50 }}
+                          className="text-sm font-[family-name:var(--font-cormorant)] italic tracking-wider font-medium"
+                          style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}
                           animate={{ opacity: [0.35, 0.65, 0.35] }}
                           transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
                         >
@@ -798,12 +811,12 @@ function InviteContent() {
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ type: "spring" }}
                     >
-                      <p className="text-[9px] tracking-[0.35em] uppercase mb-3"
-                         style={{ color: accent, opacity: 0.45 }}>
+                      <p className="text-xs tracking-[0.3em] uppercase mb-3 font-medium"
+                         style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                         The Celebration Has Begun
                       </p>
-                      <p className="font-[family-name:var(--font-great-vibes)] text-3xl"
-                         style={{ color: accent, opacity: 0.85 }}>
+                      <p className="font-[family-name:var(--font-great-vibes)] text-4xl font-bold"
+                         style={{ color: ACCENT_DARK, textShadow: `0 2px 4px rgba(255,255,255,0.9)` }}>
                         🪷 Today, forever begins 🪷
                       </p>
                     </motion.div>
@@ -812,7 +825,7 @@ function InviteContent() {
 
                 {/* Lotus divider 4 — after countdown */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.86 }}>
-                  <LotusDivider color={accent} className="w-full opacity-40 mb-3" />
+                  <LotusDivider color={accent} className="w-full opacity-40 mb-3" icon="📸" />
                 </motion.div>
 
                 {/* ══════════════════════════════════════════════
@@ -824,8 +837,8 @@ function InviteContent() {
                   transition={{ delay: 0.88 }}
                 >
                   {/* Section label */}
-                  <p className="text-[9px] tracking-[0.35em] uppercase mb-4"
-                     style={{ color: accent, opacity: 0.45 }}>
+                  <p className="text-xs tracking-[0.3em] uppercase mb-4 font-medium"
+                     style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                     Venue
                   </p>
 
@@ -843,8 +856,8 @@ function InviteContent() {
 
                   {/* Hall name */}
                   <p
-                    className="font-[family-name:var(--font-playfair)] text-base font-bold tracking-wide leading-tight mb-1"
-                    style={{ color: accent }}
+                    className="font-[family-name:var(--font-playfair)] text-lg font-bold tracking-wide leading-tight mb-1"
+                    style={{ color: ACCENT_DARK, textShadow: `0 1px 2px rgba(255,255,255,0.9)` }}
                   >
                     {card.venueName ?? card.venue}
                   </p>
@@ -857,15 +870,15 @@ function InviteContent() {
                     card.venueAddress.split("\n").map((line, i) => (
                       <p
                         key={i}
-                        className="font-[family-name:var(--font-cormorant)] text-[13px] leading-relaxed"
-                        style={{ color: accent, opacity: i === 0 ? 0.80 : 0.60 }}
+                        className="font-[family-name:var(--font-cormorant)] text-base leading-relaxed font-medium"
+                        style={{ color: ACCENT_DARK, opacity: i === 0 ? 0.95 : 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}
                       >
                         {line}
                       </p>
                     ))
                   ) : (
-                    <p className="font-[family-name:var(--font-cormorant)] text-[13px] leading-relaxed"
-                       style={{ color: accent, opacity: 0.65 }}>
+                    <p className="font-[family-name:var(--font-cormorant)] text-base leading-relaxed font-medium"
+                       style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                       {card.venue}
                     </p>
                   )}
@@ -896,9 +909,9 @@ function InviteContent() {
                 {/* Message */}
                 {card.message && (
                   <motion.p
-                    className="text-sm italic mb-5 max-w-xs mx-auto leading-relaxed"
-                    style={{ color: accent, opacity: 0.45 }}
-                    initial={{ opacity: 0 }} animate={{ opacity: 0.45 }}
+                    className="text-base italic mb-5 max-w-xs mx-auto leading-relaxed font-medium"
+                    style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                     transition={{ delay: 0.9 }}>
                     &ldquo;{card.message}&rdquo;
                   </motion.p>
@@ -906,7 +919,7 @@ function InviteContent() {
 
                 {/* Lotus divider 3 */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.80 }}>
-                  <LotusDivider color={accent} className="w-full opacity-40 mb-3" />
+                  <LotusDivider color={accent} className="w-full opacity-40 mb-3" icon="💑" />
                 </motion.div>
 
                 {/* ══════════════════════════════════════════════
@@ -928,12 +941,12 @@ function InviteContent() {
                         animate={{ scale: [1, 1.15, 1] }}
                         transition={{ duration: 1.2, repeat: 2 }}
                       >🪷</motion.p>
-                      <p className="font-[family-name:var(--font-great-vibes)] text-3xl mb-1"
-                         style={{ color: accent }}>
+                      <p className="font-[family-name:var(--font-playfair)] text-3xl mb-1 font-bold"
+                         style={{ color: ACCENT_DARK, textShadow: `0 2px 4px rgba(255,255,255,0.9)` }}>
                         Thank you, {inviteeName}!
                       </p>
-                      <p className="font-[family-name:var(--font-cormorant)] text-[13px] mt-1"
-                         style={{ color: accent, opacity: 0.55 }}>
+                      <p className="font-[family-name:var(--font-cormorant)] text-base mt-1 font-medium"
+                         style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                         Your response has been noted.<br />We can&apos;t wait to see you!
                       </p>
                     </motion.div>
@@ -947,24 +960,24 @@ function InviteContent() {
                       </div>
 
                       {/* Heading */}
-                      <p className="text-[9px] tracking-[0.35em] uppercase mb-1"
-                         style={{ color: accent, opacity: 0.45 }}>
+                      <p className="text-xs tracking-[0.3em] uppercase mb-1 font-semibold"
+                         style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
                         RSVP
                       </p>
-                      <p className="font-[family-name:var(--font-great-vibes)] text-4xl leading-snug mb-3"
-                         style={{ color: accent }}>
+                      <p className="font-[family-name:var(--font-great-vibes)] text-5xl leading-snug mb-3 font-bold"
+                         style={{ color: ACCENT_DARK, textShadow: `0 2px 4px rgba(255,255,255,0.9)` }}>
                         Will You Join Us?
                       </p>
 
-                      {/* Description */}
-                      <p className="font-[family-name:var(--font-cormorant)] text-[13px] leading-relaxed mb-1"
-                         style={{ color: accent, opacity: 0.60 }}>
-                        We would be absolutely thrilled to celebrate with you.
-                      </p>
-                      <p className="font-[family-name:var(--font-cormorant)] text-[12px] italic mb-6"
-                         style={{ color: accent, opacity: 0.45 }}>
-                        Kindly respond by 22.11.2026
-                      </p>
+{/* Description */}
+                      <p className="font-[family-name:var(--font-cormorant)] text-[17px] leading-relaxed mb-1"
+                          style={{ color: ACCENT_DARK, opacity: 0.85, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
+                         We would be absolutely thrilled to celebrate with you.
+                       </p>
+                       <p className="font-[family-name:var(--font-cormorant)] text-[16px] italic mb-6"
+                          style={{ color: ACCENT_DARK, opacity: 0.75, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
+                         Kindly respond by <span className="font-[family-name:var(--font-playfair)] font-bold" style={{ color: accent }}>22.11.2026</span>
+                       </p>
 
                       {!showRsvp ? (
                         <motion.button
@@ -976,7 +989,10 @@ function InviteContent() {
                             boxShadow: `0 4px 20px ${accent}45`,
                             letterSpacing: "0.18em",
                           }}
-                          whileHover={{ scale: 1.06, boxShadow: `0 8px 28px ${accent}55` }}
+                          initial={{ scale: 1 }}
+                          animate={{ scale: [1, 1.03, 1] }}
+                          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                          whileHover={{ scale: 1.08, boxShadow: `0 8px 28px ${accent}55` }}
                           whileTap={{ scale: 0.95 }}
                         >
                           RSVP Now
@@ -993,11 +1009,11 @@ function InviteContent() {
                                 key={String(val)}
                                 type="button"
                                 onClick={() => setAttending(val)}
-                                className="flex-1 py-3 rounded-xl text-xs font-semibold tracking-wide transition"
+                                className="flex-1 py-3 rounded-xl text-sm font-semibold tracking-wide transition"
                                 style={{
                                   border: `1.5px solid ${attending === val ? accent : `${accent}30`}`,
                                   backgroundColor: attending === val ? accent : `${accent}08`,
-                                  color: attending === val ? PARCHMENT : accent,
+                                  color: attending === val ? PARCHMENT : ACCENT_DARK,
                                 }}
                                 whileHover={{ scale: 1.03 }}
                                 whileTap={{ scale: 0.97 }}
@@ -1040,7 +1056,7 @@ function InviteContent() {
               <motion.div
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1 }}
               >
-                <LotusDivider color={accent} className="w-full opacity-40" />
+                <LotusDivider color={accent} className="w-full opacity-40" icon="✨" />
               </motion.div>
 
               <motion.div
@@ -1063,8 +1079,8 @@ function InviteContent() {
 
                 {/* "With Love" */}
                 <p
-                  className="text-[9px] tracking-[0.4em] uppercase mb-2"
-                  style={{ color: accent, opacity: 0.45 }}
+                  className="text-xs tracking-[0.35em] uppercase mb-2 font-semibold"
+                  style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}
                 >
                   With Love
                 </p>
@@ -1076,22 +1092,22 @@ function InviteContent() {
                   <div className="flex-1 h-px" style={{ background: `linear-gradient(to left, transparent, ${accent}40)` }} />
                 </div>
 
-                {/* Bride & Groom — one line */}
+{/* Bride & Groom — one line */}
                 <motion.div
                   className="flex items-baseline justify-center gap-3"
                   initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 1.25, type: "spring", stiffness: 180, damping: 18 }}
                 >
-                  <span className="font-[family-name:var(--font-great-vibes)] text-4xl leading-tight"
-                        style={{ color: accent }}>
+                  <span className="font-[family-name:var(--font-great-vibes)] text-5xl leading-tight font-bold"
+                        style={{ color: ACCENT_DARK, textShadow: `0 2px 4px rgba(255,255,255,0.9)` }}>
                     {card.bride}
                   </span>
-                  <span className="font-[family-name:var(--font-playfair)] text-xl select-none"
-                        style={{ color: accent, opacity: 0.45 }}>
-                    &amp;
+                  <span className="font-[family-name:var(--font-playfair)] text-2xl select-none font-semibold"
+                        style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.9)` }}>
+                    &
                   </span>
-                  <span className="font-[family-name:var(--font-great-vibes)] text-4xl leading-tight"
-                        style={{ color: accent }}>
+                  <span className="font-[family-name:var(--font-great-vibes)] text-5xl leading-tight font-bold"
+                        style={{ color: ACCENT_DARK, textShadow: `0 2px 4px rgba(255,255,255,0.9)` }}>
                     {card.groom}
                   </span>
                 </motion.div>
@@ -1100,12 +1116,12 @@ function InviteContent() {
                 <div className="flex items-center gap-3 mt-4">
                   <div className="flex-1 h-px" style={{ background: `linear-gradient(to right, transparent, ${accent}30)` }} />
                   <motion.span
-                    className="text-[11px] font-[family-name:var(--font-cormorant)] italic tracking-wider"
-                    style={{ color: accent, opacity: 0.45 }}
+                    className="text-sm font-[family-name:var(--font-cormorant)] italic tracking-wider font-medium"
+                    style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}
                     animate={{ opacity: [0.30, 0.60, 0.30] }}
                     transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
                   >
-                    ✦ forever &amp; always ✦
+                    ✦ forever & always ✦
                   </motion.span>
                   <div className="flex-1 h-px" style={{ background: `linear-gradient(to left, transparent, ${accent}30)` }} />
                 </div>
@@ -1133,13 +1149,14 @@ function InviteContent() {
                 <CornerFoliage color={accent}
                   className="absolute bottom-0 w-32 h-40 opacity-55"
                   style={{ right: "-10%", transform: "scale(-1,-1)" } as React.CSSProperties} />
-                <p className="absolute bottom-3 left-0 right-0 text-center text-[9px] tracking-[0.3em] uppercase select-none"
-                   style={{ color: `${accent}40` }}>
-                  ✦ forever &amp; always ✦
+<p className="absolute bottom-3 left-0 right-0 text-center text-xs tracking-[0.25em] uppercase select-none font-medium"
+                   style={{ color: ACCENT_DARK, opacity: 0.9, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
+                  ✦ forever & always ✦
                 </p>
               </div>
             </div>
           </motion.div>
+          </>
         )}
 
       </AnimatePresence>
