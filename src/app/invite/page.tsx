@@ -911,7 +911,7 @@ function InviteContent() {
 
                 {/* Lotus divider 3 */}
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.80 }}>
-                  <LotusDivider color={accent} className="w-full opacity-40 mb-3" icon="💑" />
+                  <LotusDivider color={accent} className="w-full opacity-40 mb-3" icon="👩‍❤️‍👨" />
                 </motion.div>
 
                 {/* ══════════════════════════════════════════════
