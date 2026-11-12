@@ -976,7 +976,7 @@ function InviteContent() {
                        </p>
                        <p className="font-[family-name:var(--font-cormorant)] text-[16px] italic mb-6"
                           style={{ color: ACCENT_DARK, opacity: 0.75, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
-                         Kindly respond by <span className="font-[family-name:var(--font-playfair)] font-bold" style={{ color: accent }}>22.11.2026</span>
+                         Kindly respond by <span className="font-[family-name:var(--font-playfair)] font-bold" style={{ color: accent }}>20.11.2026</span>
                        </p>
 
                       {!showRsvp ? (
