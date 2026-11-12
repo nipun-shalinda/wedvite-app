@@ -6,7 +6,7 @@ export const HARDCODED_CARD = {
   endTime: "4.00 PM",
   poruwaTime: "9.05 AM",
   venue: "Amaya Grand, 11/9 Malvilawatte, Giriulla,",
-  venueName: "GLAMOUR BALLROOM (2ND FLOOR)",
+  venueName: "GLAMOURS BALLROOM (2ND FLOOR)",
   venueAddress: "AMAYA GRAND HOTEL\n11/9 Malvilawatte, Giriulla",
   mapLink: "https://maps.app.goo.gl/ierSPVgk8Lu7j7436",
   groomFather: "Mr. Udaya Wijayasiri",
@@ -39,6 +39,7 @@ export const DEFAULT_SHARE_MESSAGE = `💍 You're Invited!
 📅 {weddingDate}, {weddingTime} onwards
 🪷 Poruwa Ceremony at {poruwaTime}
 📍 {venue}
+   {venueName}
 
 Open your personal invitation here:
 🔗 {inviteLink}

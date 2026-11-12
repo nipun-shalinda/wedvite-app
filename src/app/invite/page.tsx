@@ -123,6 +123,14 @@ function InviteContent() {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
 
+  function closeCard() {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsOpen(false);
+  }
+
   async function handleRsvp() {
     if (attending === null) return;
     setSending(true);
@@ -968,7 +976,7 @@ function InviteContent() {
                        </p>
                        <p className="font-[family-name:var(--font-cormorant)] text-[16px] italic mb-6"
                           style={{ color: ACCENT_DARK, opacity: 0.75, textShadow: `0 1px 2px rgba(255,255,255,0.8)` }}>
-                         Kindly respond by <span className="font-[family-name:var(--font-playfair)] font-bold" style={{ color: accent }}>22.11.2026</span>
+                         Kindly respond by <span className="font-[family-name:var(--font-playfair)] font-bold" style={{ color: accent }}>20.11.2026</span>
                        </p>
 
                       {!showRsvp ? (
@@ -1131,6 +1139,28 @@ function InviteContent() {
                   alt="Kandyan perahera procession"
                   className="w-3/4 mx-auto object-contain block"
                 />
+              </motion.div>
+
+              {/* ── CLOSE CARD BUTTON ── */}
+              <motion.div
+                className="flex flex-col items-center gap-2 pb-6 pt-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.3 }}
+              >
+                <motion.button
+                  onClick={closeCard}
+                  className="flex items-center gap-1.5 px-5 py-1.5 rounded-full border text-[11px] font-bold tracking-[0.2em] uppercase transition"
+                  style={{
+                    borderColor: `${accent}55`,
+                    color: ACCENT_DARK,
+                    backgroundColor: `${accent}0d`,
+                  }}
+                  whileHover={{ scale: 1.06, backgroundColor: `${accent}20`, boxShadow: `0 4px 18px ${accent}30` }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span style={{ color: accent }}>✕</span> Close
+                </motion.button>
               </motion.div>
 
               {/* Bottom corner foliage */}

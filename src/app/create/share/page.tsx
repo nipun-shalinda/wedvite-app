@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { getDefaultCard } from "@/lib/card-data";
 import { buildShareMessage, buildInviteUrl, whatsappUrl, emailUrl } from "@/lib/share";
 import { addInvitee, fetchInvitees } from "@/lib/google-sheet";
+import { AdminGate } from "@/components/AdminGate";
 import Link from "next/link";
 
 interface InviteeEntry {
@@ -49,6 +50,7 @@ export default function SharePage() {
   }
 
   return (
+    <AdminGate>
     <div className="min-h-screen bg-white">
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <Link href="/create" className="text-sm text-black/40 hover:text-black/70">← Edit Card</Link>
@@ -134,5 +136,6 @@ export default function SharePage() {
         )}
       </main>
     </div>
+    </AdminGate>
   );
 }
