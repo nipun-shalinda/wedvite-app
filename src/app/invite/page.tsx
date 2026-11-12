@@ -123,6 +123,14 @@ function InviteContent() {
     weekday: "long", year: "numeric", month: "long", day: "numeric",
   });
 
+  function closeCard() {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsOpen(false);
+  }
+
   async function handleRsvp() {
     if (attending === null) return;
     setSending(true);
@@ -1141,7 +1149,7 @@ function InviteContent() {
                 transition={{ delay: 1.3 }}
               >
                 <motion.button
-                  onClick={() => setIsOpen(false)}
+                  onClick={closeCard}
                   className="flex items-center gap-1.5 px-5 py-1.5 rounded-full border text-[11px] font-bold tracking-[0.2em] uppercase transition"
                   style={{
                     borderColor: `${accent}55`,
