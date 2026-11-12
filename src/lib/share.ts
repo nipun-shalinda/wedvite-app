@@ -18,6 +18,7 @@ export function buildShareMessage(card: CardData, inviteeName: string, baseUrl: 
     .replace("{weddingTime}", card.time)
     .replace("{poruwaTime}", card.poruwaTime)
     .replace("{venue}", card.venue)
+    .replace("{venueName}", card.venueName ?? "")
     .replace("{inviteLink}", inviteLink);
 }
 

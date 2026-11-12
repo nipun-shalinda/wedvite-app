@@ -39,6 +39,7 @@ export const DEFAULT_SHARE_MESSAGE = `💍 You're Invited!
 📅 {weddingDate}, {weddingTime} onwards
 🪷 Poruwa Ceremony at {poruwaTime}
 📍 {venue}
+   {venueName}
 
 Open your personal invitation here:
 🔗 {inviteLink}
