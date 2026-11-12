@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { HARDCODED_CARD, DEFAULT_THEME, FONT_STYLES, BACKGROUND_PATTERNS } from "@/lib/constants";
+import { AdminGate } from "@/components/AdminGate";
 
 export default function CreatePage() {
   const router = useRouter();
@@ -39,6 +40,7 @@ export default function CreatePage() {
   });
 
   return (
+    <AdminGate>
     <div className="min-h-screen bg-white">
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <h1 className="text-2xl font-[family-name:var(--font-playfair)] text-gray-800">Create Your Invitation</h1>
@@ -187,5 +189,6 @@ export default function CreatePage() {
         </div>
       </main>
     </div>
+    </AdminGate>
   );
 }
