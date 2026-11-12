@@ -1133,6 +1133,28 @@ function InviteContent() {
                 />
               </motion.div>
 
+              {/* ── CLOSE CARD BUTTON ── */}
+              <motion.div
+                className="flex flex-col items-center gap-2 pb-6 pt-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.3 }}
+              >
+                <motion.button
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center gap-1.5 px-5 py-1.5 rounded-full border text-[11px] font-bold tracking-[0.2em] uppercase transition"
+                  style={{
+                    borderColor: `${accent}55`,
+                    color: ACCENT_DARK,
+                    backgroundColor: `${accent}0d`,
+                  }}
+                  whileHover={{ scale: 1.06, backgroundColor: `${accent}20`, boxShadow: `0 4px 18px ${accent}30` }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span style={{ color: accent }}>✕</span> Close
+                </motion.button>
+              </motion.div>
+
               {/* Bottom corner foliage */}
               <div className="relative h-16 overflow-hidden">
                 <CornerFoliage color={accent}
