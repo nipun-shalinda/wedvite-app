@@ -36,7 +36,7 @@ export default function HomePage() {
     const name = inviteeName.trim();
     if (!name) return;
     const link = buildInviteUrl(card, name, baseUrl);
-    setInvitees((prev) => [...prev, { name, link }]);
+    setInvitees((prev) => [{ name, link }, ...prev]);
     setInviteeName("");
     await addInvitee(name);
   }
