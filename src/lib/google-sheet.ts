@@ -15,9 +15,13 @@ export async function addInvitee(name: string): Promise<void> {
 export async function fetchInvitees(): Promise<string[]> {
   if (!GOOGLE_SCRIPT_URL) return [];
   try {
-    const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=fetch`);
+    const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=fetch&_=${Date.now()}`, {
+      cache: "no-store",
+    });
     const data = await res.json();
-    return data.names ?? [];
+    const names: string[] = data.names ?? [];
+    // Return in descending order (newest first)
+    return [...names].reverse();
   } catch {
     return [];
   }
