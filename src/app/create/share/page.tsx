@@ -10,6 +10,7 @@ import Link from "next/link";
 interface InviteeEntry {
   name: string;
   link: string;
+  addedAt: number;
 }
 
 export default function SharePage() {
@@ -25,9 +26,11 @@ export default function SharePage() {
   useEffect(() => {
     fetchInvitees().then((names) => {
       const origin = window.location.origin;
-      setInvitees(names.map((name) => ({
+      // fetchInvitees already returns names in descending order (newest first)
+      setInvitees(names.map((name, i) => ({
         name,
         link: buildInviteUrl(card, name, origin),
+        addedAt: names.length - i,
       })));
       setLoading(false);
     });
@@ -38,7 +41,8 @@ export default function SharePage() {
     const name = inviteeName.trim();
     if (!name) return;
     const link = buildInviteUrl(card, name, baseUrl);
-    setInvitees((prev) => [...prev, { name, link }]);
+    // prepend with the highest addedAt so it stays on top
+    setInvitees((prev) => [{ name, link, addedAt: Date.now() }, ...prev]);
     setInviteeName("");
     await addInvitee(name);
   }
@@ -102,10 +106,10 @@ export default function SharePage() {
               </h3>
             </div>
             <div className="divide-y divide-gray-200">
-              {invitees.map((inv, i) => {
+              {[...invitees].sort((a, b) => b.addedAt - a.addedAt).map((inv) => {
                 const msg = buildShareMessage(card, inv.name, baseUrl);
                 return (
-                  <div key={i} className="px-6 py-4">
+                  <div key={inv.name} className="px-6 py-4">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-2">
                       <span className="font-medium text-gray-800">{inv.name}</span>
                       <div className="flex flex-wrap gap-2">
@@ -117,9 +121,9 @@ export default function SharePage() {
                           className="text-xs px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
                           📧 Email
                         </a>
-                        <button onClick={() => copyToClipboard(inv.link, `link-${i}`)}
+                        <button onClick={() => copyToClipboard(inv.link, `link-${inv.name}`)}
                           className="text-xs px-3 py-1.5 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
-                          {copied === `link-${i}` ? "✓ Copied!" : "🔗 Copy Link"}
+                          {copied === `link-${inv.name}` ? "✓ Copied!" : "🔗 Copy Link"}
                         </button>
                       </div>
                     </div>
